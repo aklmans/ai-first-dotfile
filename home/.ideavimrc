@@ -1,0 +1,741 @@
+""" Aklman 的 IdeaVim 配置 -------------------------
+""" https://github.com/aklmans/dotfiles
+"""
+
+
+""" 常用功能设置 -------------------------
+"""
+
+" 设置leader键为<Space>
+let mapleader = "\<Space>"
+" 防止leader键移动
+nnoremap <space> <nop>
+vnoremap <space> <nop>
+" 插入模式转换普通模
+inoremap jk <Esc>
+inoremap jj <Esc>
+inoremap kk <Esc>
+" 鼠标右键
+map <Leader>me <Action>(ShowPopupMenu)
+vmap <Leader>me <Action>(ShowPopupMenu)
+" 智能提示
+nmap <Leader>ia <Action>(ShowIntentionActions)
+nmap <leader>qf <Action>(ShowIntentionActions)
+" Generate 功能列表
+nmap <leader>gc <Action>(Generate)
+" 查看文档
+map <Leader>jd <Action>(QuickJavaDoc)
+" 查看方法参数
+map <Leader>pi <Action>(ParameterInfo)
+" 关闭正激活的内容
+nmap <leader>qq <Action>(CloseContent)
+" 下一行合并到上一行
+" map <leader>J Ji <ESC>
+" 简化缩进
+nnoremap > >>
+nnoremap < <<
+vnoremap > >gv
+vnoremap < <gv
+
+
+""" 插件 -------------------------
+"""
+
+"" JetBrains 插件市场中安装的插件 https://plugins.jetbrains.com/
+" - IdeaVim
+" - AceJump
+" - IdeaVim-EasyMotion
+" - IdeaVim-Quickscope
+" - IdeaVimExtension
+
+"" IdeaVim  插件管理系统中安装的插件 https://github.com/JetBrains/ideavim/wiki/IdeaVim-Plugins
+
+" 环绕插入符号 https://github.com/tpope/vim-surround
+set surround
+" 快速跳转 https://github.com/AlexPl292/IdeaVim-EasyMotion
+set easymotion
+" 快速操作参数 https://github.com/vim-scripts/argtextobj.vim
+set argtextobj
+" 快速调换位置 https://github.com/tommcdo/vim-exchange
+set exchange
+" 复制时高亮 https://github.com/machakann/vim-highlightedyank/tree/master
+set highlightedyank
+" 代码树 https://github.com/JetBrains/ideavim/wiki/NERDTree-support
+set NERDTree
+" 搜索时提示高亮 https://github.com/unblevable/quick-scope
+" set quickscope
+" 增强段落移动 https://github.com/dbakker/vim-paragraph-motion
+set vim-paragraph-motion
+" 多光标操作 https://github.com/terryma/vim-multiple-cursors/blob/master/doc/multiple_cursors.txt
+set multiple-cursors
+" 快速注释 https://github.com/tpope/vim-commentary/tree/master
+set commentary
+" 快速选择 https://github.com/kana/vim-textobj-entire/tree/master
+set textobj-entire
+" 快速替换 https://github.com/vim-scripts/ReplaceWithRegister/tree/master
+set ReplaceWithRegister
+" 将选定的文本块连接到一起 https://github.com/JetBrains/ideavim/blob/master/doc/ideajoin-examples.md
+set ideajoin
+
+
+""" Plugin settings -------------------------
+"""
+
+" 高亮时间
+let g:highlightedyank_highlight_duration = 1000
+" 自定义颜色
+let g:highlightedyank_highlight_color = "rgba(210,240,244, 155)"
+" 快速跳转
+let g:argtextobj_pairs="[:],(:),<:>"
+" QuickScope 插件的最大字符数
+let g:qs_max_chars=20
+
+" Remap multiple-cursors shortcuts for Mac
+nmap <C-n> <Plug>NextWholeOccurrence
+xmap <C-n> <Plug>NextWholeOccurrence
+"nmap <C-p> <Plug>PrevWholeOccurrence
+nmap <C-x> <Plug>SkipOccurrence
+xmap <C-x> <Plug>SkipOccurrence
+nmap <C-p> <Plug>RemoveOccurrence
+xmap <C-p> <Plug>RemoveOccurrence
+nmap <S-C-n> <Plug>AllWholeOccurrences
+xmap <S-C-n> <Plug>AllWholeOccurrences
+
+""" 基础设置 -------------------------
+"""
+
+" 底部显示当前模式
+set showmode
+" 显示当前正在编辑的命令
+set showcmd
+" 分屏滚动行数
+set so=5
+" 增量搜索
+set incsearch
+" 高亮搜索结果
+set hlsearch
+" 不区分大小写
+set ignorecase
+" 智能大小写
+set smartcase
+" " 行号显示 & 显示样式
+set number relativenumber
+" 将系统剪贴板与vim剪贴板合并
+set clipboard+=unnamed
+set clipboard+=ideaput
+" 在进行重构操作时保留未修改的代码
+set idearefactormode=keep
+" 屏幕追随光标移动的距离
+set scrolloff=8
+" 命令历史记录大小设置为200
+set history=200
+" 突出错误提示
+set visualbell
+" 禁用超时功能
+set notimeout
+" 选择模式
+set selectmode
+" 保存文件时自动删除行尾空格
+set gdefault
+
+" 显示/隐藏高亮
+nmap <leader>nh :noh<CR>
+" 显示/隐藏行号
+nmap <leader>nn <Action>(EditorGutterToggleGlobalLineNumbers)
+nmap <leader>vn <Action>(EditorGutterToggleGlobalLineNumbers)
+" 显示/隐藏头部工具栏
+nmap <leader>vk <Action>(ViewToolBar)
+nmap <leader>vt <Action>(ViewToolBar)
+" 显示/隐藏底部状态栏
+nmap <leader>vj <Action>(ViewStatusBar)
+" 显示/隐藏侧边栏
+nmap <leader>vl <Action>(ViewToolButtons)
+nmap <leader>vh <Action>(ViewToolButtons)
+" 打开设置显示/隐藏文件导航栏窗口
+nmap <leader>vf <Action>(ConfigureEditorTabs)
+" 显示/隐藏代码缩略图
+map <leader>vg <Action>(CodeGlancePro.toggle)
+
+""" 导航 Navigation -------------------------
+"""
+
+" 全屏/小屏幕切换 Toggle Full Screen
+map fw <Action>(ToggleFullScreen)
+map <leader>fw <Action>(ToggleFullScreen)
+" 演示模式
+map <leader>pm <Action>(TogglePresentationMode)
+map pm <Action>(TogglePresentationMode)
+" Zen 模式
+nmap <leader>z <Action>(ToggleDistractionFreeMode)
+nmap zm <action>(ToggleDistractionFreeMode)
+
+" 激活工具窗口
+map <M-1> <Action>(ActivateProjectToolWindow)
+map <M-2>  <Action>(ActivateTerminalToolWindow)
+map <M-3> <Action>(ActivateFindToolWindow)
+map <M-4> <Action>(ActivateRunToolWindow)
+map <M-5> <Action>(ActivateDebugToolWindow)
+map <M-6> <Action>(ActivateProblemsViewToolWindow)
+map <M-7> <Action>(ActivateStructureToolWindow)
+map <M-8> <Action>(ActivateServicesToolWindow)
+map <M-9> <Action>(ActivateVersionControlToolWindow)
+map <M-0> <Action>(ActivateCommitToolWindow)
+map <leader>sn <Action>(ActivateSonarLintToolWindow)
+map <leader>db <Action>(ActivateDatabaseToolWindow)
+map <leader>td <Action>(ActivateTODOToolWindow)
+" map <leader>mk <Action>(ActivatemakeToolWindow)
+map <leader>co <Action>(ActivateGitHubCopilotChatToolWindow)
+map <leader>ci <Action>(ActivateGitHubCopilotInsightToolWindow)
+map <leader>lc <Action>(ActivateLeetCodeToolWindow)
+map <leader>mp <Action>(CodeGlancePro.toggle)
+
+
+" 切换 Tab
+map <leader>1 <Action>(GoToTab1)
+map <leader>2 <Action>(GoToTab2)
+map <leader>3 <Action>(GoToTab3)
+map <leader>4 <Action>(GoToTab4)
+map <leader>5 <Action>(GoToTab5)
+map <leader>6 <Action>(GoToTab6)
+map <leader>7 <Action>(GoToTab7)
+map <leader>8 <Action>(GoToTab8)
+map <leader>9 <Action>(GoToTab9)
+map <leader>0 <Action>(GoToLastTab)
+
+" 上/下一个 Tab
+" map <Tab> <Action>(NextTab)
+nmap <Tab> <Action>(NextTab)
+vmap <Tab> <Action>(NextTab)
+" map <S-Tab> <Action>(PreviousTab)
+nmap <S-Tab> <Action>(PreviousTab)
+vmap <S-Tab> <Action>(PreviousTab)
+
+nmap [b <Action>(PreviousTab)
+nmap ]b <Action>(NextTab)
+nmap [e <Action>(GotoPreviousError)
+nmap ]e <Action>(GotoNextError)
+nmap [u <Action>(GotoPrevElementUnderCaretUsage)
+nmap ]u <Action>(GotoNextElementUnderCaretUsage)
+nmap [o <Action>(PreviousOccurence)
+nmap ]o <Action>(NextOccurence)
+nmap [m <Action>(MethodUp)
+nmap ]m <Action>(MethodDown)
+nmap [c <Action>(JumpToLastChange)
+nmap ]c <Action>(JumpToNextChange)
+
+" goto
+nmap <leader>ga <Action>(GotoAction)
+nmap ga <Action>(GotoAction)
+nmap gc <Action>(GotoClass)
+nmap gf <Action>(GotoFile)
+nmap gs <Action>(GotoSymbol)
+nmap gt <Action>(GoToTest)
+nmap gT <Action>(TextSearchAction)
+nmap go <Action>(GotoSuperMethod)
+nmap gd <Action>(GotoDeclaration)
+nmap gD <Action>(GotoTypeDeclaration)
+nmap gi <Action>(GotoImplementation)
+nmap gI <Action>(QuickImplementations)
+nmap gn <Action>(ShowNavBar)
+
+" 定位到文件树
+nmap <Leader>\ <Action>(SelectInProjectView)
+" 打开文件切换窗口
+map <C-e> <Action>(RecentFiles)
+imap <C-e> <Action>(RecentFiles)
+" nmap <leader>rf <Action>(RecentFiles)
+map <D-e> <Action>(Switcher)
+imap <D-e> <Action>(Switcher)
+
+" 快速跳转行首与行尾
+nmap <C-l> $
+nmap <C-h> ^
+vmap <C-l> $
+vmap <C-h> ^
+" 光标移动到行尾
+map L $
+" 光标移动到行首
+map H ^
+"光标移动到下一段落
+map J }
+"光标移动到上一段落
+map K {
+" 快速移动多行
+map <C-j> 5j
+map <C-k> 5k
+" 跳转到当前光标所在位置的配对括号处
+map <c-u> %
+" 插入模式移动光标
+imap <C-h> <Left>
+imap <C-j> <Down>
+imap <C-k> <Up>
+imap <C-l> <Right>
+" 插入模式光标向前/后一个词
+imap <C-S-w> <Action>(EditorPreviousWord)
+imap <C-w> <Action>(EditorNextWord)
+" 光标移动到向前向后
+nmap <C-i> <Action>(Back)
+nmap <C-o> <Action>(Forward)
+
+" 代码书签界面  --------------------------------
+
+" 打开书签功能选项
+map <Leader>bm <Action>(Bookmarks)
+" 激活书签窗口
+map <Leader>bw <Action>(ActivateBookmarksToolWindow)
+" 创建书签（所选代码添加到书签）
+map <leader>bc <Action>(ToggleBookmark)
+" 所有书签列表
+map <Leader>bl <Action>(Bookmarks.Toggle)
+" 显示所有书签
+map <Leader>bs <Action>(ShowBookmarks)
+
+" 项目管理，快速切换多个项目
+nmap mm <action>(ManageRecentProjects)
+nmap mr <action>(Maven.Reimport)
+" 复制代码参考（所在文件和所在行）
+nmap mc <action>(CopyReference)
+" 跳转到声明
+nmap <leader>gd <Action>(GotoDeclaration)
+" 跳转到类型声明 上面的已包含跳转到类型声明
+" nmap <leader>gD <Action>(GotoTypeDeclaration)
+" 跳转上一个修改处
+nmap <leader>jl <Action>(JumpToLastChange)
+" 前进修改处
+nmap <leader>jc <Action>(JumpToNextChange)
+" 查看调用栈
+map <leader>hh <Action>(HierarchyGroup)
+" 跳转到实现
+nmap <leader>gi <Action>(GotoImplementation)
+" 跳转到类
+nmap <leader>gj <Action>(GotoClass)
+" 跳转到测试
+nmap <leader>gt <Action>(GotoTest)
+" 跳转到超级方法
+nmap <leader>ms <Action>(GotToSuperMethod)
+" 跳转到上一个方法
+nmap <leader>um <Action>(MethodUp)
+" 跳转到下一个方法
+nmap <leader>dm <Action>(MethodDown)
+
+" 左右切割窗口
+nmap <leader>sv <Action>(SplitVertically)
+nmap sr :vsplit<Return>
+" 上下切割窗口
+nmap <leader>sh <Action>(SplitHorizontally)
+nmap sd :split<Return>
+" Tab 移动到右边
+nmap <leader>ml <Action>(MoveTabRight)
+" Tab 移动到左边
+nmap <leader>mh <Action>(MoveTabLeft)
+" Tab 移动到上方
+nmap <leader>mk <Action>(MoveTabUp)
+" Tab 移动到下方
+nmap <leader>mj <Action>(MoveTabDown)
+" 将选项卡移至分隔条的下一位置
+nmap <leader>mn <Action>(MoveTabDownNextSplitter)
+
+
+"" buffer (buffer < window < tab)
+" 关闭切割窗口
+nmap <leader>us <Action>(Unsplit)
+" 关闭当前窗口
+nmap <leader>xx <Action>(CloseContent)
+" 关闭当前窗口左边的所有窗口
+nmap <leader>xl <Action>(CloseAllToTheLeft)
+" 关闭当前窗口右边的所有窗口
+nmap <leader>xr <Action>(CloseAllToTheRight)
+" 关闭所有窗口
+nmap <leader>xa <Action>(CloseAllEditors)
+" 关闭所有编辑器，但保留活动的一个
+nmap <leader>xo <Action>(CloseAllEditorsButActive)
+" 关闭所有未固定的编辑器
+nmap <leader>xp <Action>(CloseAllUnpinnedEditors)
+
+" 打开最近关闭的窗口
+nmap <leader>ro <Action>(ReopenClosedTab)
+" 隐藏所有窗口
+nmap <leader>hw <Action>(HideAllWindows)
+" 隐藏当前窗口
+nmap <leader>wa <Action>(HideActiveWindow)
+" 关闭切割窗口并隐藏所有窗口
+nmap <leader>ha <action>(UnsplitAll) \| <action>(HideAllWindows)
+" 折叠所在区域
+nmap zc <Action>(CollapseRegion)
+" 展开所在区域
+nmap ze <Action>(ExpandRegion)
+" 折叠所有区域
+nmap zz <Action>(ExpandCollapseToggleAction)
+nmap za <Action>(CollapseAllRegions)
+" 展开所有区域
+nmap zA <Action>(ExpandAllRegions)
+
+
+nmap <leader>wk <Action>(StretchSplitToTop)
+nmap <leader>wj <Action>(StretchSplitToBottom)
+nmap <leader>wh <Action>(StretchSplitToLeft)
+nmap <leader>wl <Action>(StretchSplitToRight)
+nmap <leader>wm <Action>(MaximizeEditorInSplit)
+nmap <leader>wu <Action>(UnsplitAll)
+
+
+""" 编译 & 运行 Compile & Run  ------------------
+"""
+
+" 执行 Choose Run Configuration
+nmap <leader>rx<Action>(chooseRunConfiguration)
+" 执行 Run
+nmap <leader>dr <Action>(Rerun)
+map <leader>rr <Action>(Run)
+" 打开执行一切窗口
+map <leader>ra <Action>(RunAnything)
+" map <leader>rcv <Action>(addQuickAction.Coverage)
+" 执行 Debug
+map <leader>dd <Action>(Debug)
+" 执行 Run Class
+map <leader>rc <Action>(RunClass)
+" 执行 Context Run
+nmap <leader>cr <Action>(ContextRun)
+nmap <leader>rc <Action>(ContextRun)
+" 执行 Rerun Tests
+nmap <leader>rt <Action>(RerunTests)
+" 执行 Rerun Failed Tests
+nmap <leader>ft <Action>(RerunFailedTests)
+" 执行 Open in Terminal
+nmap <leader>ot <Action>(Terminal.OpenInTerminal)
+" 运行 TS 或者 JS 代码
+map <leader>kk <Action>(Quokka.RunQuokkaOnFileAutomatically)
+
+" menu
+nmap <leader>mm <Action>(MainMenu)
+nmap <leader>ma <Action>(AnalyzeMenu)
+nmap <leader>mb <Action>(BuildMenu)
+nmap <leader>mc <Action>(CodeMenu)
+nmap <leader>mf <Action>(FindMenuGroup)
+nmap <leader>mg <Action>(GoToMenu)
+nmap <leader>ms <Action>(ScopeViewPopupMenu)
+nmap <leader>mt <Action>(EditorTabPopupMenu)
+nmap <leader>mw <Action>(ToolWindowsGroup)
+
+""" 重构 Refactoring  ------------------
+"""
+
+" 执行 Quick List Popup Action
+nmap <leader>qr <Action>(Refactorings.QuickListPopupAction)
+nmap <leader>rq <Action>(Refactorings.QuickListPopupAction)
+nmap <leader>uw <Action>(Unwrap)
+nmap <leader>sw <Action>(SurroundWith)
+nmap <leader>sd <Action>(SafeDelete)
+nmap <leader>oi <Action>(OptimizeImports)
+" 执行 Reformat Code
+map <Leader>lf <Action>(ReformatCode)
+" 执行 Rename Element
+nmap <Leader>rn <Action>(RenameElement)
+" 执行 Goto Previous Error
+nmap <leader>[e <Action>(GotoPreviousError)
+" 跳转到下一个错误
+nmap <leader>]e <Action>(GotoNextError)
+map <S-Space> <Action>(GotoNextError)
+" 显示当前文件中的错误描述
+nmap <leader>se <Action>(ShowErrorDescription)
+" 显示文件结构 & 方法列表
+map <Leader>fs <Action>(FileStructurePopup)
+
+nmap <leader>qp <Action>(QuickPreview)
+nmap <leader>qd <Action>(QuickDefinition)
+nmap <leader>qD <Action>(QuickTypeDefinition)
+
+" hierarchy
+nmap <leader>hc <Action>(CallHierarchy)
+nmap <leader>hm <Action>(MethodHierarchy)
+nmap <leader>ht <Action>(TypeHierarchy)
+
+
+" 提取选中代码块为新方法
+vmap <leader>em <Action>(ExtractMethod)
+" 将选中代码块中的常量提取为一个新的常量
+vmap <leader>ec <Action>(IntroduceConstant)
+" 将选中代码块中的变量提取为一个新的字段
+vmap <leader>ef <Action>(IntroduceField)
+" 将选中代码块中的表达式提取为一个新的变量
+vmap <leader>ev <Action>(IntroduceVariable)
+
+nmap <leader>om <Action>(OverrideMethods)
+nmap <leader>im <Action>(ImplementMethods)
+nmap <leader>fc <Action>(ReformatCode)
+nmap <leader>ic <Action>(InspectCode)
+nmap <leader>so <Action>(SelectAllOccurrences)
+
+""" 搜索 & 替换 Search & Replace  ------------------
+"""
+
+" 快速搜索并显示跳转目标
+" map <leader>f <Plug>(easymotion-s)
+" map <leader>e <Plug>(easymotion-f)
+nmap ss <Plug>(easymotion-s2)
+nmap sl <Plug>(easymotion-sl)
+" 显示替换窗口
+nmap <leader>fr <Action>(Replace)
+" 显示搜索一切窗口
+nmap <leader>ff <Action>(SearchEverywhere)
+" 显示查找位置窗口，可以设置成 ps
+nmap <leader>fp <Action>(FindInPath)
+
+""" 编辑 Editing & 选择 Selecting & 删除 Deleting  ------------------
+"""
+
+" 开启新一行
+imap <S-CR> <Action>(EditorStartNewLine)
+imap <S-D-CR> <Action>(EditorStartNewLineBefore)
+nmap <S-CR> <Action>(EditorStartNewLine)
+nmap <S-D-CR> <Action>(EditorStartNewLineBefore)
+
+" 文件操作
+nmap <leader>ne <Action>(NewElement)
+nmap <leader>re <Action>(RenameElement)
+nmap <leader>nf <Action>(NewFile)
+nmap <leader>nd <Action>(NewDir)
+nmap <leader>nc <Action>(NewClass)
+map <leader>rf <Action>(RenameFile)
+map <leader>of <Action>(OpenFile)
+nmap <leader>yp <Action>(CopyAbsolutePath)
+nmap <leader>rl <Action>(RecentLocations)
+" 打开本地历史记录
+nmap <leader>ls <Action>(LocalHistory.ShowHistory)
+" 打开文件路径
+nmap <leader>sf <Action>(ShowFilePath)
+" 打开工具选项
+nmap <leader>si <Action>(SelectIn)
+" 打开路径中替换窗口
+nmap <leader>rp <Action>(ReplaceInPath)
+" 打开浏览器并把复制的内容搜索在 Google 搜索
+nmap <leader>sg <Action>($SearchWeb)
+" 快速导航到占位符
+map <leader>sr <Action>(GotoRelated)
+" 选择模式扩大选择范围
+vmap v <Action>(EditorSelectWord)
+" 选择模式缩小选择范围
+vmap V <Action>(EditorUnSelectWord)
+" 上下左右选择
+map <S-Up> <Action>(EditorUpWithSelection)
+map <S-Down> <Action>(EditorDownWithSelection)
+map <S-Left> <Action>(EditorLeftWithSelection)
+map <S-Right> <Action>(EditorRightWithSelection)
+imap <S-Up> <Action>(EditorUpWithSelection)
+imap <S-Down> <Action>(EditorDownWithSelection)
+imap <S-Left> <Action>(EditorLeftWithSelection)
+imap <S-Right> <Action>(EditorRightWithSelection)
+vmap <S-Up> <Action>(EditorUpWithSelection)
+vmap <S-Down> <Action>(EditorDownWithSelection)
+vmap <S-Left> <Action>(EditorLeftWithSelection)
+vmap <S-Right> <Action>(EditorRightWithSelection)
+
+" 翻页
+map <leader>pu <Action>(EditorPageUp)
+map <leader>pd <Action>(EditorPageDown)
+
+" 保存行(不含换行符)
+nnoremap yir ^v$y
+nnoremap yar ^v$y
+
+" 删除行(不含换行符)
+nnoremap dir ^v$"_d
+nnoremap dar ^v$"_d
+
+" 删除行(不含换行符)
+nnoremap cir ^v"_C
+nnoremap car ^v"_C
+
+" 删除&复制行(不含换行符)
+nnoremap yxr ^v$x
+
+" 选中行(不含换行符)
+nnoremap vir ^v$
+nnoremap var ^v$
+
+" 框选指定符号结束的多行
+nnoremap vs( ^V/(<CR>%
+nnoremap vs{ ^V/{<CR>%
+nnoremap vs[ ^V/[<CR>%
+nnoremap vs) ^V%
+nnoremap vs} ^V%
+nnoremap vs] ^V%
+nnoremap vs; ^V/;<CR>
+
+" 选中方法定义
+nnoremap vsm va{<Esc>v%:action EditorSelectWord<CR>
+" 选中方法调用
+nnoremap vsf /\.<CR>Nv/(<CR>%
+
+" 复制 至行尾/行首
+nnoremap <S-y> y$
+nnoremap yL y$
+nnoremap yH y^
+
+" 删除 至行尾/行首
+nnoremap dH d^
+nnoremap dL d$
+nnoremap cH c^
+nnoremap cL c$
+
+" 删除不剪切
+nnoremap dd "_dd
+nnoremap D "_D
+nnoremap c "_c
+nnoremap cc "_cc
+nnoremap C "_C
+vnoremap d "_d
+vnoremap dd "_dd
+vnoremap D "_D
+vnoremap c "_c
+vnoremap cc "_cc
+vnoremap C "_C
+vnoremap p "_dp
+vnoremap P "_dP
+
+" 组合命令删除不剪切
+nnoremap diw "_diw
+nnoremap di" "_di"
+nnoremap di' "_di'
+nnoremap di( "_di(
+nnoremap di[ "_di[
+nnoremap di{ "_di{
+nnoremap di< "_di<
+
+nnoremap daw "_daw
+nnoremap da" "_da"
+nnoremap da' "_da'
+nnoremap da( "_da(
+nnoremap da[ "_da[
+nnoremap da{ "_da{
+nnoremap da< "_da<
+
+nnoremap ciw "_ciw
+nnoremap ci" "_ci"
+nnoremap ci' "_ci'
+nnoremap ci( "_ci(
+nnoremap ci[ "_ci[
+nnoremap ci{ "_ci{
+nnoremap ci< "_ci<
+
+nnoremap caw "_caw
+nnoremap ca" "_ca"
+nnoremap ca' "_ca'
+nnoremap ca( "_ca(
+nnoremap ca[ "_ca[
+nnoremap ca{ "_ca{
+nnoremap ca< "_ca<
+
+
+""" 搜索被使用 Usage Search  ------------------
+"""
+
+" 查找用途
+nmap <leader>fu <Action>(FindUsages)
+" 显示用途
+nmap <leader>su <Action>(ShowUsages)
+" 高亮显示文件中的用途
+nmap <leader>hl <Action>(HighlightUsagesInFile)
+
+""" Debug 调试 Debugging  ------------------
+"""
+
+" 执行 Debug
+
+" 执行 Choose Debug Configuration
+map <leader>dg <Action>(ChooseDebugConfiguration)
+" 执行 Debug
+map <leader>dd <Action>(Debug)
+nmap <leader>dc <Action>(ContextDebug)
+nmap <leader>dx <Action>(Debug)
+" nmap <leader>db <Action>(ToggleLineBreakpoint)
+" nmap <leader>de <Action>(EditBreakpoint)
+" nmap <leader>dv <Action>(ViewBreakpoints)
+" 执行 Stop
+map <leader>st <Action>(Stop)
+" 执行 Step Into
+" map <leader>si <Action>(StepInto)
+" map <leader>ssi <Action>(SmartStepInto)
+" 执行 Step Out
+" map <leader>so <Action>(StepOut)
+" 执行 Step Over
+" map <leader>su <Action>(StepOver)
+" 执行 Run To Cursor
+" map <leader>rco <Action>(RunToCursor)
+" 执行 Resume Program
+" map <leader>rp <Action>(Resume)
+" 执行 Pause
+map <leader>pa <Action>(Pause)
+" 在当前行设置或取消断点
+map <leader>bb <Action>(ToggleLineBreakpoint)
+" 取消所有的断点
+map <leader>rb <Action>(Debugger.RemoveAllBreakpoints)
+" 执行 View Breakpoints
+map <leader>vb <Action>(ViewBreakpoints)
+" 执行 Evaluate Expression
+map <leader>ee <Action>(EvaluateExpression)
+
+""" 版本管理 & 本地历史 VCS & Local History  ------------
+"""
+
+" 显示文件的版本控制历史记录
+map <leader>gh <Action>(Vcs.ShowTabbedFileHistory)
+" 显示 VCS 日志窗口
+nmap <leader>gl <Action>(Vcs.Show.Log)<CR>
+" 显示 Git 分支窗口
+nmap <leader>gb <Action>(Git.Branches)
+" 执行 Git 拉取操作
+nmap <leader>pl <Action>(Git.Pull)
+" 激活提交工具窗口，用于提交代码更改
+nmap <leader>cm <Action>(ActivateCommitToolWindow)
+" 执行 Git 推送操作
+nmap <leader>ps <Action>(Git.Push)
+" 显示 VCS 本地更改窗口
+nmap <leader>gs <Action>(Vcs.Show.Local.Changes)
+" 比较最后一个版本和当前版本之间的差异
+nmap <leader>cv <Action>(Compare.LastVersion)
+" 在浏览器中打开 Github
+nmap <leader>hb <Action>(Github.Open.In.Browser)
+
+" 显示提交代码信息
+" map <leader>a <Action>(Annotate)
+" 显示 VCS（版本控制系统）的上一个变更标记
+" nmap <leader>gpc <Action>(VcsShowPrevChangeMarker)
+" 显示 VCS 的下一个变更标记
+" nmap <leader>gnc <Action>(VcsShowNextChangeMarker)
+" 执行 Git 冲突解决操作
+" nmap <leader>gr <Action>(Git.ResolveConflicts)
+" 执行 Git 变基操作
+" nmap <leader>gr <Action>(Git.Rebase)
+" 执行 Git 合并操作
+" nmap <leader>gm <Action>(Git.Merge)
+" 执行 Git 克隆操作
+" nmap <leader>gc <action>(Git.Clone)
+
+
+""" 实时模板 Live Templates  ------------------
+"""
+
+" alias
+nmap <C-a> ggVG"+y
+
+" https://github.com/JetBrains/ideavim/blob/master/doc/NERDTree-support.md
+nnoremap <leader>n1 :NERDTree<CR>
+nnoremap <leader>n2 :NERDTreeFocus<CR>
+nnoremap <leader>n3 :NERDTreeToggle<CR>
+nnoremap <leader>n4 :NERDTreeClose<CR>
+nnoremap <leader>n5 :NERDTreeFind<CR>
+nnoremap <leader>n6 :NERDTreeRefreshRoot<CR>
+
+
+"编辑vimrc
+nnoremap <leader>ve :e ~/.ideavimrc<CR>
+" 保存所有并格式化代码
+"nnoremap <leader>ww :w!<CR>
+nmap <leader>ww <Action>(ReformatCode) & <Action>(SaveAll)
+nnoremap <leader>vs :source ~/.ideavimrc<CR>
+
+" 重启 ide
+map <leader>rs <action>(RestartIde)
+" 关闭所有通知 (Close all notifications)
+map <leader>xn <Action>(CloseAllNotifications)
