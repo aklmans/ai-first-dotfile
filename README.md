@@ -1,17 +1,19 @@
-# AI-first-dotfile
+# AI-First macOS Dotfiles
 
-AI-first-dotfile is a public, reproducible macOS dotfile setup for AI-assisted workflows.
-It is a sanitized migration from a private setup into a clean Git history.
+A practical macOS dotfiles setup for keyboard-driven workspaces, a compact desktop UI, terminal tools, and local AI prompt/agent workflows.
 
-## Purpose
+This repository combines workspace management, desktop UI, terminal defaults, and a local AI prompt/agent workflow into one documented dotfiles setup.
 
-This repo gives you one place to manage:
+## What this includes
 
-- AI workspace behavior (`AeroSpace`, `Karabiner`, `Hammerspoon`)
-- Desktop UI (`SketchyBar`, `Borders`)
-- Terminal and file tools (`Kaku`, `Warp`, `Yazi`, `zsh`, `Starship`)
-- AI execution pipeline (`AI Workflow Router`, `Prompts`, `Snippets`, `Providers`)
-- Media/editor helpers (`mpv`, `IdeaVim`, and selected app configs)
+- **Workspace automation**: `AeroSpace` layouts, display-aware workspace keys, and optional `BetterTouchTool` gestures.
+- **Desktop status UI**: `SketchyBar`, `Borders`, workspace indicators, app icons, and focused-window feedback.
+- **CapsLock AI layer**: `Karabiner` + `Hammerspoon` hotkeys for prompts, snippets, app launchers, and agent entry points.
+- **AI Workflow Router**: local prompts, snippets, provider scripts, chooser metadata, snippet exports, and agent launch helpers.
+- **Terminal workflow**: `Kaku`, optional `Warp`, `zsh`, `Starship`, and `Yazi`.
+- **Editor/media helpers**: `IdeaVim`, `mpv`, and selected app-level configuration.
+
+It is designed for developers who want fast keyboard workflows, predictable multi-display spaces, and AI actions that stay local, inspectable, and easy to customize.
 
 ## How this repo is organized
 
@@ -90,11 +92,11 @@ At runtime, the following macOS permissions are commonly required:
 
 ## Key modules and docs
 
-- [getting started](docs/getting-started.md)
-- [privacy policy](docs/privacy.md)
-- [troubleshooting](docs/troubleshooting.md)
-- [screenshots plan](docs/screenshots.md)
-- [Aerospace](docs/tools/aerospace/README.md)
+- [Getting started](docs/getting-started.md)
+- [Privacy policy](docs/privacy.md)
+- [Troubleshooting](docs/troubleshooting.md)
+- [Screenshots plan](docs/screenshots.md)
+- [AeroSpace](docs/tools/aerospace/README.md)
 - [SketchyBar + Borders](docs/tools/sketchybar/README.md)
 - [Karabiner](docs/tools/karabiner/README.md)
 - [Hammerspoon](docs/tools/hammerspoon/README.md)
@@ -104,11 +106,12 @@ At runtime, the following macOS permissions are commonly required:
 - [BetterTouchTool](docs/tools/bettertouchtool/README.md)
 - [mpv](docs/tools/mpv/README.md)
 - [Yazi](docs/tools/yazi/README.md)
-- [migration plan](MIGRATION_PLAN.md)
-- [migration report](MIGRATION_REPORT.md)
+- [Migration plan](MIGRATION_PLAN.md)
+- [Migration report](MIGRATION_REPORT.md)
 
 ## Notes for public use
 
+- This is a clean public snapshot rebuilt from a private configuration history.
 - This repository intentionally does **not** contain private runtime/history artifacts.
 - Runtime folders and secrets are excluded via `.gitignore` and migration policy.
 - `gbrain` and AI provider credentials are template-based placeholders only:

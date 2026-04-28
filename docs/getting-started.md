@@ -1,6 +1,6 @@
 # Getting Started
 
-`ai-first-dotfile` is a public, reproducible macOS dotfiles setup focused on AI-first workflow.
+`AI-First macOS Dotfiles` is a public, reproducible macOS dotfiles setup focused on AI-assisted development workflows.
 This page is the shortest practical path to bootstrap it on a clean machine.
 
 ## Installation flow
