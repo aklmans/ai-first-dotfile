@@ -28,7 +28,7 @@ Use this order on a fresh machine:
 
 1. **Core bootstrap**
    ```bash
-cd /path/to/ai-first-dotfile
+   cd /path/to/ai-first-dotfile
    ./bootstrap/brew.sh base desktop fonts
    ./bootstrap/app-store.sh
    ```
