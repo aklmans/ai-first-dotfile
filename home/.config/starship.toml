@@ -1,0 +1,36 @@
+# ~/.config/starship.toml
+# Starship prompt tuned to match the previous material-style prompt.
+
+add_newline = false
+command_timeout = 10000
+format = "[❯](#C591E8)[❯](#69FF94) $directory$git_branch$status[ 🐰  ](white)"
+
+[directory]
+style = "#56B6C2"
+format = "[$path]($style) "
+home_symbol = "~"
+truncate_to_repo = false
+truncation_length = 1
+truncation_symbol = ""
+read_only = ""
+
+[git_branch]
+style = "#D0666F"
+symbol = ""
+format = "[git:\\(](#5FAAE8)[$branch]($style)[\\)](#5FAAE8)"
+
+[status]
+disabled = false
+style = "#DCB977"
+symbol = "\uf119"
+format = " [$symbol]($style)"
+
+[character]
+success_symbol = ""
+error_symbol = ""
+format = "$symbol"
+
+# Avoid prompt width issues caused by emoji variation selectors in some
+# shell/font/wcwidth combinations.
+[aws]
+disabled = true

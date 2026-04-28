@@ -1,0 +1,4 @@
+#compdef openclaw
+
+source "$HOME/.openclaw/completions/openclaw.zsh"
+_openclaw_root_completion "$@"
