@@ -1,0 +1,1023 @@
+{
+  "version": 1,
+  "source": "AI Workflow Router",
+  "items": [
+    {
+      "id": "ask",
+      "type": "prompt",
+      "title": "Ask AI",
+      "description": "通用问答入口，优先澄清意图并给可执行结论",
+      "category": "general",
+      "tags": [
+        "ask",
+        "general"
+      ],
+      "aliases": [
+        "ask",
+        "question",
+        "chat",
+        "ai-chat",
+        "qna",
+        "帮我看看",
+        "问答",
+        "提问"
+      ],
+      "keywords": [
+        "general-question",
+        "clarify",
+        "answer",
+        "assistant",
+        "通用问题",
+        "询问",
+        "咨询"
+      ],
+      "keyword": ";qa",
+      "text": "你是我的 AI 工作流助手。请基于下面材料回答问题。\n\n要求：\n\n1. 先判断问题类型：\n   - **\"如何做 X\"**：直接给步骤\n   - **\"为什么 Y\"**：如果材料中有足够信息，直接解释；否则先澄清\n   - **\"X 是什么\"**：直接解释\n\n2. 需要澄清时，输出格式：\n   ```\n   需要澄清（选择适用项）：\n   - [ ] 选项 A\n   - [ ] 选项 B\n   或者直接回答：你的具体问题是？\n   ```\n   不超过 3 个澄清问题。\n\n3. 可以直接回答时，给出可执行结论。\n4. 保留关键假设，不要编造不存在的事实。\n\n前台应用：{{frontmost_app}}\n窗口标题：{{window_title}}\n日期：{{date}}\n\n材料：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "你是我的 AI 工作流助手。请基于下面材料回答问题。\n\n要求：\n\n1. 先判断问题类型：\n   - **\"如何做 X\"**：直接给步骤\n   - **\"为什么 Y\"**：如果材料中有足够信息，直接解释；否则先澄清\n   - **\"X 是什么\"**：直接解释\n\n2. 需要澄清时，输出格式：\n   ```\n   需要澄清（选择适用项）：\n   - [ ] 选项 A\n   - [ ] 选项 B\n   或者直接回答：你的具体问题是？\n   ```\n   不超过 3 个澄清问题。\n\n3. 可以直接回答时，给出可执行结论。\n4. 保留关键假设，不要编造不存在的事实。\n\n前台应用：\n窗口标题：\n日期：{date}\n\n材料：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "date",
+        "frontmost_app",
+        "selection",
+        "window_title"
+      ],
+      "source_path": "prompts/ask.md"
+    },
+    {
+      "id": "summarize",
+      "type": "prompt",
+      "title": "Summarize Selection",
+      "description": "总结选中文本，区分事实、推断和建议",
+      "category": "reading",
+      "tags": [
+        "reading",
+        "summary",
+        "chinese"
+      ],
+      "aliases": [
+        "summarize",
+        "summary",
+        "tl;dr",
+        "recap",
+        "brief",
+        "总结",
+        "摘要",
+        "概括"
+      ],
+      "keywords": [
+        "key-points",
+        "conclusion",
+        "facts",
+        "inference",
+        "action-items",
+        "关键结论",
+        "事实推断建议",
+        "待办"
+      ],
+      "keyword": ";sm",
+      "text": "你是一个严谨的中文技术助理。\n\n请总结下面内容，要求：\n\n1. 先给 3-5 条关键结论（每条不超过 1 行）。\n2. 区分「事实」「推断」「建议」。\n3. 保留重要数字、路径、命令、错误信息、链接、文件名。\n4. 不要编造原文没有的信息。\n5. 如果内容不足，明确说明缺失信息。\n6. 总结长度不超过原文的 30%。\n7. 最后给出我下一步可以做什么。\n\n输入内容：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "你是一个严谨的中文技术助理。\n\n请总结下面内容，要求：\n\n1. 先给 3-5 条关键结论（每条不超过 1 行）。\n2. 区分「事实」「推断」「建议」。\n3. 保留重要数字、路径、命令、错误信息、链接、文件名。\n4. 不要编造原文没有的信息。\n5. 如果内容不足，明确说明缺失信息。\n6. 总结长度不超过原文的 30%。\n7. 最后给出我下一步可以做什么。\n\n输入内容：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "prompts/summarize.md"
+    },
+    {
+      "id": "translate",
+      "type": "prompt",
+      "title": "Translate Selection",
+      "description": "中英互译，保留技术术语、代码、命令和路径",
+      "category": "writing",
+      "tags": [
+        "writing",
+        "translation"
+      ],
+      "aliases": [
+        "translate",
+        "translation",
+        "trans",
+        "bilingual",
+        "cn-en",
+        "翻译",
+        "中英互译",
+        "英译中"
+      ],
+      "keywords": [
+        "chinese",
+        "english",
+        "terminology",
+        "localization",
+        "技术翻译",
+        "术语",
+        "本地化"
+      ],
+      "keyword": ";tr",
+      "text": "请翻译下面内容。\n\n要求：\n\n1. 如果原文是英文，翻译为自然、准确的中文。\n2. 如果原文是中文，翻译为自然、专业的英文。\n3. 保留代码、命令、路径、变量名、专有名词。\n4. 技术术语处理：\n   - API、CLI、SDK、HTTP、JSON 等缩写保持英文\n   - 首次出现的术语用\"中文（English）\"格式\n   - 后续保持一致（全用中文或全用英文）\n5. 不要解释，只输出翻译结果。\n\n内容：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "请翻译下面内容。\n\n要求：\n\n1. 如果原文是英文，翻译为自然、准确的中文。\n2. 如果原文是中文，翻译为自然、专业的英文。\n3. 保留代码、命令、路径、变量名、专有名词。\n4. 技术术语处理：\n   - API、CLI、SDK、HTTP、JSON 等缩写保持英文\n   - 首次出现的术语用\"中文（English）\"格式\n   - 后续保持一致（全用中文或全用英文）\n5. 不要解释，只输出翻译结果。\n\n内容：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "prompts/translate.md"
+    },
+    {
+      "id": "explain",
+      "type": "prompt",
+      "title": "Explain Selection",
+      "description": "解释文本、代码、配置或报错，并给出下一步",
+      "category": "reading",
+      "tags": [
+        "reading",
+        "debugging",
+        "coding"
+      ],
+      "aliases": [
+        "explain",
+        "describe",
+        "why",
+        "understand",
+        "meaning",
+        "解释",
+        "说明",
+        "看不懂"
+      ],
+      "keywords": [
+        "code-explain",
+        "error-explain",
+        "config-explain",
+        "mechanism",
+        "next-step",
+        "代码解释",
+        "报错解释",
+        "原理"
+      ],
+      "keyword": ";ex",
+      "text": "请解释下面内容。\n\n要求：\n\n1. **先说明它是什么**（1 句话定位类型：代码/配置/报错/文档）。\n2. **关键机制**：\n   - 如果是代码：输入、输出、副作用、潜在风险\n   - 如果是配置：关键字段的作用和默认值\n   - 如果是报错：最可能原因（按概率排序）和排查步骤\n3. **背景或原因**（为什么这样设计/为什么会出错）。\n4. **下一步**：给出 1-3 个可执行的操作（命令、检查项、修改建议）。\n\n前台应用：{{frontmost_app}}\n窗口标题：{{window_title}}\n\n内容：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "请解释下面内容。\n\n要求：\n\n1. **先说明它是什么**（1 句话定位类型：代码/配置/报错/文档）。\n2. **关键机制**：\n   - 如果是代码：输入、输出、副作用、潜在风险\n   - 如果是配置：关键字段的作用和默认值\n   - 如果是报错：最可能原因（按概率排序）和排查步骤\n3. **背景或原因**（为什么这样设计/为什么会出错）。\n4. **下一步**：给出 1-3 个可执行的操作（命令、检查项、修改建议）。\n\n前台应用：\n窗口标题：\n\n内容：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "frontmost_app",
+        "selection",
+        "window_title"
+      ],
+      "source_path": "prompts/explain.md"
+    },
+    {
+      "id": "rewrite",
+      "type": "prompt",
+      "title": "Rewrite Selection",
+      "description": "保留原意，改写成更清晰直接的表达",
+      "category": "writing",
+      "tags": [
+        "writing",
+        "rewrite"
+      ],
+      "aliases": [
+        "rewrite",
+        "polish",
+        "improve",
+        "edit",
+        "refine",
+        "改写",
+        "润色",
+        "优化表达"
+      ],
+      "keywords": [
+        "clarity",
+        "tone",
+        "concise",
+        "professional",
+        "wording",
+        "清晰表达",
+        "专业语气",
+        "精简"
+      ],
+      "keyword": ";rw",
+      "text": "请改写下面文本。\n\n要求：\n\n1. **保留原意**（不改变事实、结论、承诺）。\n2. **语气**：更清晰、直接、专业。去掉冗余修饰词。\n3. **不添加**未经确认的新事实。\n4. **不夸张、不官腔**（避免\"非常高兴\"、\"深入探讨\"、\"赋能\"等）。\n5. 如果原文有歧义，给出 2 个候选版本，标记为\"版本 A\"和\"版本 B\"。\n6. 输出只包含改写结果，不要解释。\n\n原文：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "请改写下面文本。\n\n要求：\n\n1. **保留原意**（不改变事实、结论、承诺）。\n2. **语气**：更清晰、直接、专业。去掉冗余修饰词。\n3. **不添加**未经确认的新事实。\n4. **不夸张、不官腔**（避免\"非常高兴\"、\"深入探讨\"、\"赋能\"等）。\n5. 如果原文有歧义，给出 2 个候选版本，标记为\"版本 A\"和\"版本 B\"。\n6. 输出只包含改写结果，不要解释。\n\n原文：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "prompts/rewrite.md"
+    },
+    {
+      "id": "fix",
+      "type": "prompt",
+      "title": "Fix Selection",
+      "description": "修复文本、格式或小范围代码问题",
+      "category": "editing",
+      "tags": [
+        "writing",
+        "coding",
+        "fix"
+      ],
+      "aliases": [
+        "fix",
+        "correct",
+        "repair",
+        "grammar",
+        "typo",
+        "修复",
+        "纠错",
+        "改错"
+      ],
+      "keywords": [
+        "spelling",
+        "punctuation",
+        "formatting",
+        "syntax",
+        "small-fix",
+        "错别字",
+        "标点",
+        "格式修复"
+      ],
+      "keyword": ";fx",
+      "text": "请修复下面内容。\n\n要求：\n\n1. **文本**：修复错别字、语法、标点、格式问题。保留原意。\n2. **代码**：只修复明显的语法错误、拼写错误、缩进问题、未闭合括号。\n3. **不修复**：逻辑 bug、性能问题、安全漏洞（这些需要更多上下文）。\n4. 如果发现严重问题但不确定如何修，在输出后用 `<!-- 注意：发现 X 问题但未修复 -->` 说明。\n5. 输出修复后的内容，不要额外解释。\n\n内容：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "请修复下面内容。\n\n要求：\n\n1. **文本**：修复错别字、语法、标点、格式问题。保留原意。\n2. **代码**：只修复明显的语法错误、拼写错误、缩进问题、未闭合括号。\n3. **不修复**：逻辑 bug、性能问题、安全漏洞（这些需要更多上下文）。\n4. 如果发现严重问题但不确定如何修，在输出后用 `<!-- 注意：发现 X 问题但未修复 -->` 说明。\n5. 输出修复后的内容，不要额外解释。\n\n内容：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "prompts/fix.md"
+    },
+    {
+      "id": "extract",
+      "type": "prompt",
+      "title": "Extract Key Points",
+      "description": "从输入中提取结论、待办、实体、风险和下一步",
+      "category": "reading",
+      "tags": [
+        "extraction",
+        "structure"
+      ],
+      "aliases": [
+        "extract",
+        "keypoints",
+        "structure",
+        "parse",
+        "entities",
+        "提取",
+        "结构化",
+        "要点"
+      ],
+      "keywords": [
+        "todo",
+        "action-items",
+        "risks",
+        "links",
+        "files",
+        "关键信息",
+        "待办事项",
+        "风险"
+      ],
+      "keyword": ";xt",
+      "text": "请从下面内容中提取结构化信息。\n\n输出格式：\n\n## 关键结论\n- （1 行总结每个结论）\n\n## 待办事项\n- [ ] 任务描述（负责人，截止时间）\n\n## 涉及的人 / 项目 / 文件 / 链接\n- 人：@name\n- 项目：project-name\n- 文件：`path/to/file`\n- 链接：https://...\n\n## 风险或不确定点\n- 风险描述（影响范围）\n\n## 建议下一步\n- 具体可执行的操作\n\n要求：\n\n1. **不要编造**。如果某类信息不存在，写”未提及”。\n2. **保留重要数字、路径、命令、错误信息**。\n3. 待办事项用 `[ ]` 标记，方便复制到任务管理工具。\n\n内容：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "请从下面内容中提取结构化信息。\n\n输出格式：\n\n## 关键结论\n- （1 行总结每个结论）\n\n## 待办事项\n- [ ] 任务描述（负责人，截止时间）\n\n## 涉及的人 / 项目 / 文件 / 链接\n- 人：@name\n- 项目：project-name\n- 文件：`path/to/file`\n- 链接：https://...\n\n## 风险或不确定点\n- 风险描述（影响范围）\n\n## 建议下一步\n- 具体可执行的操作\n\n要求：\n\n1. **不要编造**。如果某类信息不存在，写”未提及”。\n2. **保留重要数字、路径、命令、错误信息**。\n3. 待办事项用 `[ ]` 标记，方便复制到任务管理工具。\n\n内容：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "prompts/extract.md"
+    },
+    {
+      "id": "research",
+      "type": "prompt",
+      "title": "Research Plan",
+      "description": "把问题拆成可执行的研究任务和验证清单",
+      "category": "research",
+      "tags": [
+        "research",
+        "search"
+      ],
+      "aliases": [
+        "research",
+        "search",
+        "investigate",
+        "lookup",
+        "verify",
+        "研究",
+        "搜索",
+        "调研"
+      ],
+      "keywords": [
+        "fact-check",
+        "web-search",
+        "sources",
+        "validation",
+        "query-plan",
+        "事实核查",
+        "联网搜索",
+        "资料来源"
+      ],
+      "keyword": ";rs",
+      "text": "请把下面问题拆成一个可执行的研究任务。\n\n要求：\n\n1. **明确研究目标和判断标准**（什么算\"找到答案\"）。\n2. **列出需要验证的事实点**（按优先级排序）。\n3. **给出推荐搜索关键词**或资料来源类型（官方文档、GitHub issue、论文等）。\n4. **标注哪些结论必须联网验证**（如版本号、API 变更、最新政策）。\n5. **输出一个简短的研究结论模板**，方便我填充结果。\n\n输出格式：\n\n## 研究目标\n要回答的核心问题\n\n## 需要验证的事实（按优先级）\n1. [ ] 事实 A（搜索关键词：...）\n2. [ ] 事实 B（资料来源：...）\n\n## 必须联网验证\n- 项目 X 的最新版本号\n- ...\n\n## 结论模板\n```\n核心发现：\n- \n证据来源：\n-\n建议：\n-\n```\n\n问题或材料：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "请把下面问题拆成一个可执行的研究任务。\n\n要求：\n\n1. **明确研究目标和判断标准**（什么算\"找到答案\"）。\n2. **列出需要验证的事实点**（按优先级排序）。\n3. **给出推荐搜索关键词**或资料来源类型（官方文档、GitHub issue、论文等）。\n4. **标注哪些结论必须联网验证**（如版本号、API 变更、最新政策）。\n5. **输出一个简短的研究结论模板**，方便我填充结果。\n\n输出格式：\n\n## 研究目标\n要回答的核心问题\n\n## 需要验证的事实（按优先级）\n1. [ ] 事实 A（搜索关键词：...）\n2. [ ] 事实 B（资料来源：...）\n\n## 必须联网验证\n- 项目 X 的最新版本号\n- ...\n\n## 结论模板\n```\n核心发现：\n- \n证据来源：\n-\n建议：\n-\n```\n\n问题或材料：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "prompts/research.md"
+    },
+    {
+      "id": "generate",
+      "type": "prompt",
+      "title": "Generate Content",
+      "description": "基于需求生成可直接使用的文本、结构或步骤",
+      "category": "writing",
+      "tags": [
+        "generation",
+        "writing"
+      ],
+      "aliases": [
+        "generate",
+        "create",
+        "write",
+        "make",
+        "produce",
+        "生成",
+        "创作",
+        "写作"
+      ],
+      "keywords": [
+        "content",
+        "draft-output",
+        "template",
+        "structure",
+        "requirements",
+        "内容生成",
+        "结构生成",
+        "可直接使用"
+      ],
+      "keyword": ";gn",
+      "text": "请基于下面需求生成内容。\n\n要求：\n\n1. **先确认**（如果需求不明确，列出假设）：\n   - 目标：要达成什么\n   - 受众：给谁看\n   - 约束：长度、格式、语气限制\n2. **给出一个可直接使用的版本**（不要只给大纲）。\n3. 如果有多种合理方向，最多给 2 个备选，标记为\"方案 A\"和\"方案 B\"。\n4. **避免空话**，优先给具体文本、结构或步骤。\n\n需求：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "请基于下面需求生成内容。\n\n要求：\n\n1. **先确认**（如果需求不明确，列出假设）：\n   - 目标：要达成什么\n   - 受众：给谁看\n   - 约束：长度、格式、语气限制\n2. **给出一个可直接使用的版本**（不要只给大纲）。\n3. 如果有多种合理方向，最多给 2 个备选，标记为\"方案 A\"和\"方案 B\"。\n4. **避免空话**，优先给具体文本、结构或步骤。\n\n需求：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "prompts/generate.md"
+    },
+    {
+      "id": "draft",
+      "type": "prompt",
+      "title": "Draft Message",
+      "description": "根据材料起草邮件、IM、文档、评论或计划",
+      "category": "writing",
+      "tags": [
+        "writing",
+        "draft"
+      ],
+      "aliases": [
+        "draft",
+        "compose",
+        "message",
+        "email",
+        "reply",
+        "起草",
+        "草稿",
+        "写消息"
+      ],
+      "keywords": [
+        "email-draft",
+        "im-message",
+        "comment",
+        "plan",
+        "action-items",
+        "邮件",
+        "即时消息",
+        "回复"
+      ],
+      "keyword": ";df",
+      "text": "请基于下面材料起草一份可直接发送或继续编辑的内容。\n\n要求：\n\n1. **先判断最合适的文体**：邮件、IM、文档、评论、计划或说明。\n2. **语气**：直接、清楚、不过度客套（避免\"希望这封邮件找到你时一切安好\"等）。\n3. **行动项**：如果有，明确负责人、时间和下一步。\n4. **输出正文**，不要写\"以下是草稿\"等多余解释。\n\n材料：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "请基于下面材料起草一份可直接发送或继续编辑的内容。\n\n要求：\n\n1. **先判断最合适的文体**：邮件、IM、文档、评论、计划或说明。\n2. **语气**：直接、清楚、不过度客套（避免\"希望这封邮件找到你时一切安好\"等）。\n3. **行动项**：如果有，明确负责人、时间和下一步。\n4. **输出正文**，不要写\"以下是草稿\"等多余解释。\n\n材料：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "prompts/draft.md"
+    },
+    {
+      "id": "translate-to-en",
+      "type": "prompt",
+      "title": "Translate to English",
+      "description": "中文翻译成英文，保留技术术语和代码",
+      "category": "writing",
+      "tags": [
+        "writing",
+        "translation",
+        "english"
+      ],
+      "aliases": [
+        "english",
+        "translate-en",
+        "to-en",
+        "zh-en",
+        "cn-to-en",
+        "中译英",
+        "英文",
+        "翻成英文"
+      ],
+      "keywords": [
+        "chinese-to-english",
+        "technical-english",
+        "localization",
+        "terminology",
+        "英文表达",
+        "技术英文",
+        "中文翻译"
+      ],
+      "keyword": ";en",
+      "text": "请将下面中文翻译成英文。\n\n要求：\n\n1. **自然、专业的英文表达**（不要逐字翻译）。\n2. **保留**：代码、命令、路径、变量名、专有名词。\n3. **技术术语**：\n   - API、CLI、SDK、HTTP、JSON 等缩写保持原样\n   - 中文技术术语翻译为业界标准英文（如\"中间件\" → \"middleware\"）\n4. **不要解释**，只输出翻译结果。\n\n中文内容：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "请将下面中文翻译成英文。\n\n要求：\n\n1. **自然、专业的英文表达**（不要逐字翻译）。\n2. **保留**：代码、命令、路径、变量名、专有名词。\n3. **技术术语**：\n   - API、CLI、SDK、HTTP、JSON 等缩写保持原样\n   - 中文技术术语翻译为业界标准英文（如\"中间件\" → \"middleware\"）\n4. **不要解释**，只输出翻译结果。\n\n中文内容：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "prompts/translate-to-en.md"
+    },
+    {
+      "id": "optimize-prompt",
+      "type": "prompt",
+      "title": "Optimize Prompt",
+      "description": "优化 AI prompt，提升清晰度、约束性和输出稳定性",
+      "category": "prompt-engineering",
+      "tags": [
+        "prompt-engineering",
+        "optimization"
+      ],
+      "aliases": [
+        "prompt",
+        "enhance-prompt",
+        "optimize",
+        "prompt-engineering",
+        "improve-prompt",
+        "提示词",
+        "提示词增强",
+        "优化提示词"
+      ],
+      "keywords": [
+        "system-prompt",
+        "instruction",
+        "constraints",
+        "output-format",
+        "few-shot",
+        "约束",
+        "输出格式",
+        "指令优化"
+      ],
+      "keyword": ";op",
+      "text": "请优化下面的 AI prompt。\n\n要求：\n\n1. **增强约束性**：\n   - 明确禁止 AI 常见坏习惯（夸张、编造、空话）\n   - 定义输出格式（用结构化模板）\n   - 限制长度或范围\n\n2. **提升清晰度**：\n   - 任务边界明确（做什么 / 不做什么）\n   - 优先级清晰（如果有多个要求）\n   - 用加粗标记关键指令\n\n3. **添加示例**（如果任务复杂）：\n   - 给 1-2 个 Few-Shot 示例\n   - 格式：输入 → 输出\n\n4. **输出优化后的 prompt**，不要解释改了什么。\n\n原 prompt：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "请优化下面的 AI prompt。\n\n要求：\n\n1. **增强约束性**：\n   - 明确禁止 AI 常见坏习惯（夸张、编造、空话）\n   - 定义输出格式（用结构化模板）\n   - 限制长度或范围\n\n2. **提升清晰度**：\n   - 任务边界明确（做什么 / 不做什么）\n   - 优先级清晰（如果有多个要求）\n   - 用加粗标记关键指令\n\n3. **添加示例**（如果任务复杂）：\n   - 给 1-2 个 Few-Shot 示例\n   - 格式：输入 → 输出\n\n4. **输出优化后的 prompt**，不要解释改了什么。\n\n原 prompt：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "prompts/optimize-prompt.md"
+    },
+    {
+      "id": "code-review",
+      "type": "prompt",
+      "title": "Code Review",
+      "description": "以代码评审方式检查改动、风险和测试缺口",
+      "category": "coding",
+      "tags": [
+        "coding",
+        "review"
+      ],
+      "aliases": [
+        "review",
+        "code-review",
+        "cr",
+        "review-code",
+        "inspect",
+        "代码评审",
+        "审查",
+        "代码审查"
+      ],
+      "keywords": [
+        "findings",
+        "regression",
+        "edge-cases",
+        "test-gaps",
+        "risk-review",
+        "行为回归",
+        "边界条件",
+        "测试缺口"
+      ],
+      "keyword": ";cr",
+      "text": "请以代码评审方式检查下面内容。\n\n要求：\n\n1. Findings first，按以下优先级排序：\n   - **P0**: 数据丢失、安全漏洞、生产故障\n   - **P1**: 行为回归、边界条件未处理、数据兼容性\n   - **P2**: 错误处理不完整、测试缺口\n   - **P3**: 可读性、命名（仅在严重影响理解时提）\n\n2. 每个问题包含：\n   - 具体位置（行号、函数名、文件名）\n   - 问题描述\n   - 影响范围\n   - 建议修复方法\n\n3. 不要做无关风格建议。\n4. 最后给出简短 summary（1-2 句话）。\n\n输出格式：\n\n## P0 Issues\n- [位置] 问题描述 → 建议\n\n## P1 Issues\n- ...\n\n## Summary\n总体评价和主要风险\n\n材料：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "请以代码评审方式检查下面内容。\n\n要求：\n\n1. Findings first，按以下优先级排序：\n   - **P0**: 数据丢失、安全漏洞、生产故障\n   - **P1**: 行为回归、边界条件未处理、数据兼容性\n   - **P2**: 错误处理不完整、测试缺口\n   - **P3**: 可读性、命名（仅在严重影响理解时提）\n\n2. 每个问题包含：\n   - 具体位置（行号、函数名、文件名）\n   - 问题描述\n   - 影响范围\n   - 建议修复方法\n\n3. 不要做无关风格建议。\n4. 最后给出简短 summary（1-2 句话）。\n\n输出格式：\n\n## P0 Issues\n- [位置] 问题描述 → 建议\n\n## P1 Issues\n- ...\n\n## Summary\n总体评价和主要风险\n\n材料：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "prompts/code-review.md"
+    },
+    {
+      "id": "commit-message",
+      "type": "prompt",
+      "title": "Generate Commit Message",
+      "description": "根据改动生成简洁英文 commit message",
+      "category": "coding",
+      "tags": [
+        "coding",
+        "git"
+      ],
+      "aliases": [
+        "commit",
+        "commit-message",
+        "git-message",
+        "conventional-commit",
+        "git-commit",
+        "提交信息",
+        "commit-msg",
+        "提交说明"
+      ],
+      "keywords": [
+        "changelog",
+        "diff-summary",
+        "conventional",
+        "type-scope-subject",
+        "git",
+        "变更摘要",
+        "提交标题",
+        "英文提交"
+      ],
+      "keyword": ";cm",
+      "text": "请根据下面改动生成提交信息。\n\n要求：\n\n1. 使用英文。\n2. 标题不超过 72 字符，格式：`type(scope): subject`\n3. body 简明说明 why 和 what，每行不超过 80 字符。\n4. 不要夸张，不要营销语气。\n\n示例：\n\n**改动**：添加了用户认证中间件，修复了 session 过期后的重定向问题\n**输出**：\n```\nfix(auth): redirect to login on expired session\n\nPreviously users saw a 401 error page. Now they're\nredirected to /login with a flash message explaining\nthe session expired.\n```\n\n**改动**：重构了配置文件解析逻辑，提取了公共函数\n**输出**：\n```\nrefactor(config): extract parse_frontmatter helper\n\nReduces duplication across 3 files. No behavior change.\n```\n\n改动：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "请根据下面改动生成提交信息。\n\n要求：\n\n1. 使用英文。\n2. 标题不超过 72 字符，格式：`type(scope): subject`\n3. body 简明说明 why 和 what，每行不超过 80 字符。\n4. 不要夸张，不要营销语气。\n\n示例：\n\n**改动**：添加了用户认证中间件，修复了 session 过期后的重定向问题\n**输出**：\n```\nfix(auth): redirect to login on expired session\n\nPreviously users saw a 401 error page. Now they're\nredirected to /login with a flash message explaining\nthe session expired.\n```\n\n**改动**：重构了配置文件解析逻辑，提取了公共函数\n**输出**：\n```\nrefactor(config): extract parse_frontmatter helper\n\nReduces duplication across 3 files. No behavior change.\n```\n\n改动：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "prompts/commit-message.md"
+    },
+    {
+      "id": "debug",
+      "type": "prompt",
+      "title": "Debug Issue",
+      "description": "系统化分析 bug，给出排查路径和验证方法",
+      "category": "coding",
+      "tags": [
+        "debugging",
+        "coding"
+      ],
+      "aliases": [
+        "debug",
+        "bug",
+        "troubleshoot",
+        "diagnose",
+        "root-cause",
+        "调试",
+        "排查",
+        "定位问题"
+      ],
+      "keywords": [
+        "issue-analysis",
+        "repro",
+        "hypothesis",
+        "verification",
+        "fix-plan",
+        "根因",
+        "复现",
+        "验证方法"
+      ],
+      "keyword": ";db",
+      "text": "请帮我调试这个问题。\n\n输出格式：\n\n## 问题分析\n- **现象**：实际发生了什么\n- **预期**：应该发生什么\n- **差异**：关键差异点\n\n## 可能原因（按概率排序）\n1. **[70%] 原因 A**\n   - 验证方法：具体命令或检查步骤\n   - 如果是这个，修复方法：...\n\n2. **[20%] 原因 B**\n   - 验证方法：...\n   - 如果是这个，修复方法：...\n\n3. **[10%] 原因 C**\n   - ...\n\n## 最小复现步骤\n1. 前置条件（环境、数据状态）\n2. 操作步骤\n3. 观察到的错误\n\n## 需要的额外信息（如果材料不足）\n- [ ] 日志文件路径\n- [ ] 环境变量配置\n- [ ] ...\n\n前台应用：{{frontmost_app}}\n日期：{{date}}\n\n问题描述：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "请帮我调试这个问题。\n\n输出格式：\n\n## 问题分析\n- **现象**：实际发生了什么\n- **预期**：应该发生什么\n- **差异**：关键差异点\n\n## 可能原因（按概率排序）\n1. **[70%] 原因 A**\n   - 验证方法：具体命令或检查步骤\n   - 如果是这个，修复方法：...\n\n2. **[20%] 原因 B**\n   - 验证方法：...\n   - 如果是这个，修复方法：...\n\n3. **[10%] 原因 C**\n   - ...\n\n## 最小复现步骤\n1. 前置条件（环境、数据状态）\n2. 操作步骤\n3. 观察到的错误\n\n## 需要的额外信息（如果材料不足）\n- [ ] 日志文件路径\n- [ ] 环境变量配置\n- [ ] ...\n\n前台应用：\n日期：{date}\n\n问题描述：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "date",
+        "frontmost_app",
+        "selection"
+      ],
+      "source_path": "prompts/debug.md"
+    },
+    {
+      "id": "pr-description",
+      "type": "prompt",
+      "title": "Generate PR Description",
+      "description": "根据改动生成 PR 描述、测试说明和风险",
+      "category": "coding",
+      "tags": [
+        "coding",
+        "git",
+        "pull-request"
+      ],
+      "aliases": [
+        "pr",
+        "pull-request",
+        "pr-description",
+        "merge-request",
+        "mr",
+        "PR描述",
+        "合并请求",
+        "PR说明"
+      ],
+      "keywords": [
+        "summary",
+        "changes",
+        "testing",
+        "risks",
+        "review-notes",
+        "改动说明",
+        "测试说明",
+        "风险说明"
+      ],
+      "keyword": ";pr",
+      "text": "请根据下面材料生成 PR 描述。\n\n输出结构：\n\n## Summary\n- 1-2 句话说明这个 PR 做了什么和为什么\n\n## Changes\n- 按文件或模块列出主要改动\n- 每条说明改了什么，不要只列文件名\n\n## Testing\n- 如何验证这个改动（手动测试步骤或自动化测试）\n- 测试了哪些场景（正常路径 + 边界条件）\n\n## Risks\n- 可能影响的现有功能\n- 需要特别注意的部署步骤\n- 如果无风险，写\"None\"\n\n示例：\n\n## Summary\n- Add rate limiting to `/api/users` endpoint to prevent abuse\n\n## Changes\n- `middleware/rate_limit.go`: new rate limiter (100 req/min per IP)\n- `routes/users.go`: apply rate limit middleware\n- `config/default.yaml`: add `rate_limit.enabled` flag\n\n## Testing\n- Manual: sent 150 requests in 1 min, got 429 after 100th\n- Unit tests: `TestRateLimitMiddleware` covers edge cases\n- Verified existing `/api/posts` endpoint unaffected\n\n## Risks\n- If Redis is down, rate limiting fails open (allows all requests)\n- Need to monitor 429 error rate after deploy\n\n材料：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "请根据下面材料生成 PR 描述。\n\n输出结构：\n\n## Summary\n- 1-2 句话说明这个 PR 做了什么和为什么\n\n## Changes\n- 按文件或模块列出主要改动\n- 每条说明改了什么，不要只列文件名\n\n## Testing\n- 如何验证这个改动（手动测试步骤或自动化测试）\n- 测试了哪些场景（正常路径 + 边界条件）\n\n## Risks\n- 可能影响的现有功能\n- 需要特别注意的部署步骤\n- 如果无风险，写\"None\"\n\n示例：\n\n## Summary\n- Add rate limiting to `/api/users` endpoint to prevent abuse\n\n## Changes\n- `middleware/rate_limit.go`: new rate limiter (100 req/min per IP)\n- `routes/users.go`: apply rate limit middleware\n- `config/default.yaml`: add `rate_limit.enabled` flag\n\n## Testing\n- Manual: sent 150 requests in 1 min, got 429 after 100th\n- Unit tests: `TestRateLimitMiddleware` covers edge cases\n- Verified existing `/api/posts` endpoint unaffected\n\n## Risks\n- If Redis is down, rate limiting fails open (allows all requests)\n- Need to monitor 429 error rate after deploy\n\n材料：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "prompts/pr-description.md"
+    },
+    {
+      "id": "refactor",
+      "type": "prompt",
+      "title": "Refactor Code",
+      "description": "重构代码，保持行为不变但提升可维护性",
+      "category": "coding",
+      "tags": [
+        "coding",
+        "refactor"
+      ],
+      "aliases": [
+        "refactor",
+        "cleanup",
+        "restructure",
+        "simplify",
+        "maintainability",
+        "重构",
+        "优化代码",
+        "清理代码"
+      ],
+      "keywords": [
+        "behavior-preserving",
+        "duplicate-code",
+        "long-function",
+        "naming",
+        "maintainable",
+        "保持行为",
+        "重复代码",
+        "可维护性"
+      ],
+      "keyword": ";rf",
+      "text": "请重构下面代码。\n\n要求：\n\n1. **保持外部行为完全不变**（输入输出、副作用、性能特征）。\n2. **优先改进**：\n   - 重复代码（提取公共函数）\n   - 过长函数（拆分为小函数）\n   - 不清晰命名（改为描述性名称）\n   - 魔法数字（提取为常量）\n3. **不改变**：架构、依赖、公共 API。\n4. 输出重构后的代码 + 简短说明（1-2 句话说明改了什么）。\n\n示例：\n\n**输入**：\n```python\ndef process(data):\n    if data[\"type\"] == \"A\":\n        return data[\"value\"] * 2\n    elif data[\"type\"] == \"B\":\n        return data[\"value\"] * 3\n    else:\n        return data[\"value\"]\n```\n\n**输出**：\n```python\nMULTIPLIERS = {\"A\": 2, \"B\": 3}\n\ndef process(data):\n    multiplier = MULTIPLIERS.get(data[\"type\"], 1)\n    return data[\"value\"] * multiplier\n```\n重构说明：用字典替换 if-elif 链，提取魔法数字为常量。\n\n代码：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "请重构下面代码。\n\n要求：\n\n1. **保持外部行为完全不变**（输入输出、副作用、性能特征）。\n2. **优先改进**：\n   - 重复代码（提取公共函数）\n   - 过长函数（拆分为小函数）\n   - 不清晰命名（改为描述性名称）\n   - 魔法数字（提取为常量）\n3. **不改变**：架构、依赖、公共 API。\n4. 输出重构后的代码 + 简短说明（1-2 句话说明改了什么）。\n\n示例：\n\n**输入**：\n```python\ndef process(data):\n    if data[\"type\"] == \"A\":\n        return data[\"value\"] * 2\n    elif data[\"type\"] == \"B\":\n        return data[\"value\"] * 3\n    else:\n        return data[\"value\"]\n```\n\n**输出**：\n```python\nMULTIPLIERS = {\"A\": 2, \"B\": 3}\n\ndef process(data):\n    multiplier = MULTIPLIERS.get(data[\"type\"], 1)\n    return data[\"value\"] * multiplier\n```\n重构说明：用字典替换 if-elif 链，提取魔法数字为常量。\n\n代码：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "prompts/refactor.md"
+    },
+    {
+      "id": "terminal-error",
+      "type": "prompt",
+      "title": "Terminal Error Analysis",
+      "description": "分析终端错误并给出最小修复步骤",
+      "category": "debugging",
+      "tags": [
+        "terminal",
+        "debugging"
+      ],
+      "aliases": [
+        "terminal",
+        "error",
+        "shell-error",
+        "cli-error",
+        "command-error",
+        "终端错误",
+        "报错",
+        "命令报错"
+      ],
+      "keywords": [
+        "stderr",
+        "exit-code",
+        "command-output",
+        "shell",
+        "minimal-fix",
+        "错误输出",
+        "退出码",
+        "最小修复"
+      ],
+      "keyword": ";te",
+      "text": "请分析这个终端错误，并给出最小修复步骤。\n\n系统信息：\n- 前台应用：{{frontmost_app}}\n- 日期：{{date}}\n\n要求：\n\n1. 判断最可能根因（如果错误信息提到路径/命令，说明它们的作用）。\n2. 给出最小验证命令（用于确认根因）。\n3. 给出最小修复步骤。\n4. 明确哪些操作有破坏性（如 `rm -rf`、`--force`），标记为 ⚠️。\n5. 给出如何确认修复成功。\n\n输出格式：\n\n## 根因\n最可能原因\n\n## 验证\n```bash\n# 运行这个命令确认根因\ncommand\n```\n\n## 修复\n```bash\n# 步骤 1\ncommand\n# 步骤 2（⚠️ 破坏性操作）\ncommand\n```\n\n## 确认成功\n重新运行原命令，预期输出：...\n\n命令和输出：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "请分析这个终端错误，并给出最小修复步骤。\n\n系统信息：\n- 前台应用：\n- 日期：{date}\n\n要求：\n\n1. 判断最可能根因（如果错误信息提到路径/命令，说明它们的作用）。\n2. 给出最小验证命令（用于确认根因）。\n3. 给出最小修复步骤。\n4. 明确哪些操作有破坏性（如 `rm -rf`、`--force`），标记为 ⚠️。\n5. 给出如何确认修复成功。\n\n输出格式：\n\n## 根因\n最可能原因\n\n## 验证\n```bash\n# 运行这个命令确认根因\ncommand\n```\n\n## 修复\n```bash\n# 步骤 1\ncommand\n# 步骤 2（⚠️ 破坏性操作）\ncommand\n```\n\n## 确认成功\n重新运行原命令，预期输出：...\n\n命令和输出：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "date",
+        "frontmost_app",
+        "selection"
+      ],
+      "source_path": "prompts/terminal-error.md"
+    },
+    {
+      "id": "architecture-review",
+      "type": "snippet",
+      "title": "Architecture Review",
+      "description": "评审方案或架构，关注边界、复杂度、演进和风险",
+      "category": "review",
+      "tags": [
+        "snippet",
+        "architecture",
+        "review"
+      ],
+      "aliases": [
+        "architecture",
+        "arch-review",
+        "design-review",
+        "架构评审",
+        "方案评审"
+      ],
+      "keywords": [
+        "system-design",
+        "complexity",
+        "boundaries",
+        "rollback",
+        "risk",
+        "系统设计",
+        "边界",
+        "回滚"
+      ],
+      "keyword": ";ar",
+      "text": "# Architecture Review\n\n请评审下面方案或架构。\n\n关注点：\n\n1. 目标是否清晰。\n2. 边界是否合理。\n3. 复杂度是否必要。\n4. 可演进性和回滚路径。\n5. 实施风险和验证计划。\n\n材料：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "# Architecture Review\n\n请评审下面方案或架构。\n\n关注点：\n\n1. 目标是否清晰。\n2. 边界是否合理。\n3. 复杂度是否必要。\n4. 可演进性和回滚路径。\n5. 实施风险和验证计划。\n\n材料：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "snippets/architecture-review.md"
+    },
+    {
+      "id": "bug-report",
+      "type": "snippet",
+      "title": "Bug Report",
+      "description": "生成结构化 bug 报告，包含现象、复现、环境和排查问题",
+      "category": "debugging",
+      "tags": [
+        "snippet",
+        "debugging",
+        "report"
+      ],
+      "aliases": [
+        "bug",
+        "issue",
+        "repro",
+        "缺陷报告",
+        "问题报告"
+      ],
+      "keywords": [
+        "actual-behavior",
+        "expected-behavior",
+        "steps-to-reproduce",
+        "environment",
+        "logs",
+        "复现步骤",
+        "预期行为",
+        "实际行为"
+      ],
+      "keyword": ";br",
+      "text": "# Bug Report\n\n## 现象\n\n{{selection}}\n\n## 期望行为\n\n\n## 实际行为\n\n\n## 复现步骤\n\n1.\n2.\n3.\n\n## 环境\n\n- App:\n- OS:\n- Version:\n\n## 已尝试\n\n\n## 需要 AI 帮助判断\n\n1. 可能根因是什么？\n2. 如何最小化验证？\n3. 应该优先检查哪些日志或配置？",
+      "raycast_text": "# Bug Report\n\n## 现象\n\n{clipboard}\n\n## 期望行为\n\n\n## 实际行为\n\n\n## 复现步骤\n\n1.\n2.\n3.\n\n## 环境\n\n- App:\n- OS:\n- Version:\n\n## 已尝试\n\n\n## 需要 AI 帮助判断\n\n1. 可能根因是什么？\n2. 如何最小化验证？\n3. 应该优先检查哪些日志或配置？",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "snippets/bug-report.md"
+    },
+    {
+      "id": "commit-message",
+      "type": "snippet",
+      "title": "Commit Message",
+      "description": "根据改动生成英文提交信息模板",
+      "category": "coding",
+      "tags": [
+        "snippet",
+        "coding",
+        "git"
+      ],
+      "aliases": [
+        "commit",
+        "git-message",
+        "conventional-commit",
+        "提交信息",
+        "提交说明"
+      ],
+      "keywords": [
+        "git",
+        "diff",
+        "type-scope-subject",
+        "changelog",
+        "变更摘要",
+        "英文提交"
+      ],
+      "keyword": ";gc",
+      "text": "# Commit Message\n\n请根据下面改动生成提交信息。\n\n要求：\n\n1. 使用英文。\n2. 标题不超过 72 字符。\n3. body 简明说明 why 和 what。\n4. 不要夸张，不要营销语气。\n\n改动：\n\n```text\n{{selection}}\n```",
+      "raycast_text": "# Commit Message\n\n请根据下面改动生成提交信息。\n\n要求：\n\n1. 使用英文。\n2. 标题不超过 72 字符。\n3. body 简明说明 why 和 what。\n4. 不要夸张，不要营销语气。\n\n改动：\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "snippets/commit-message.md"
+    },
+    {
+      "id": "incident-report",
+      "type": "snippet",
+      "title": "Incident Report",
+      "description": "事故复盘模板，包含影响、时间线、根因和后续行动",
+      "category": "operations",
+      "tags": [
+        "snippet",
+        "operations",
+        "report"
+      ],
+      "aliases": [
+        "incident",
+        "postmortem",
+        "outage",
+        "事故复盘",
+        "故障报告"
+      ],
+      "keywords": [
+        "impact",
+        "timeline",
+        "root-cause",
+        "mitigation",
+        "follow-up",
+        "影响范围",
+        "时间线",
+        "根因分析"
+      ],
+      "keyword": ";ir",
+      "text": "# Incident Report\n\n## 事件概述\n\n{{selection}}\n\n## 影响范围\n\n\n## 时间线\n\n-\n\n## 根因分析\n\n\n## 处置过程\n\n\n## 后续行动\n\n-",
+      "raycast_text": "# Incident Report\n\n## 事件概述\n\n{clipboard}\n\n## 影响范围\n\n\n## 时间线\n\n-\n\n## 根因分析\n\n\n## 处置过程\n\n\n## 后续行动\n\n-",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "snippets/incident-report.md"
+    },
+    {
+      "id": "meeting-notes",
+      "type": "snippet",
+      "title": "Meeting Notes",
+      "description": "会议记录模板，整理结论、决策、待办和风险",
+      "category": "writing",
+      "tags": [
+        "snippet",
+        "meeting",
+        "writing"
+      ],
+      "aliases": [
+        "meeting",
+        "notes",
+        "minutes",
+        "会议纪要",
+        "会议记录"
+      ],
+      "keywords": [
+        "decisions",
+        "action-items",
+        "blockers",
+        "agenda",
+        "discussion",
+        "决策",
+        "待办",
+        "风险阻塞"
+      ],
+      "keyword": ";mt",
+      "text": "# Meeting Notes\n\n## 主题\n\n\n## 结论\n\n-\n\n## 决策\n\n-\n\n## 待办\n\n-\n\n## 风险 / 阻塞\n\n-\n\n## 原始记录\n\n```text\n{{selection}}\n```",
+      "raycast_text": "# Meeting Notes\n\n## 主题\n\n\n## 结论\n\n-\n\n## 决策\n\n-\n\n## 待办\n\n-\n\n## 风险 / 阻塞\n\n-\n\n## 原始记录\n\n```text\n{clipboard}\n```",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "snippets/meeting-notes.md"
+    },
+    {
+      "id": "pr-review",
+      "type": "snippet",
+      "title": "PR Review",
+      "description": "代码评审模板，优先检查回归、边界条件和测试缺口",
+      "category": "coding",
+      "tags": [
+        "snippet",
+        "coding",
+        "review"
+      ],
+      "aliases": [
+        "pr",
+        "review",
+        "code-review",
+        "代码评审",
+        "PR审查"
+      ],
+      "keywords": [
+        "findings",
+        "regression",
+        "edge-cases",
+        "error-handling",
+        "tests",
+        "行为回归",
+        "边界条件",
+        "测试缺口"
+      ],
+      "keyword": ";rv",
+      "text": "# PR Review\n\n请以代码评审方式检查下面改动或说明。\n\n重点：\n\n1. 行为回归。\n2. 边界条件。\n3. 数据兼容性。\n4. 错误处理。\n5. 测试缺口。\n\n材料：\n\n```text\n{{selection}}\n```\n\n输出格式：\n\n- Findings first，按严重程度排序。\n- 每个问题给出具体位置或可验证线索。\n- 最后只给简短 summary。",
+      "raycast_text": "# PR Review\n\n请以代码评审方式检查下面改动或说明。\n\n重点：\n\n1. 行为回归。\n2. 边界条件。\n3. 数据兼容性。\n4. 错误处理。\n5. 测试缺口。\n\n材料：\n\n```text\n{clipboard}\n```\n\n输出格式：\n\n- Findings first，按严重程度排序。\n- 每个问题给出具体位置或可验证线索。\n- 最后只给简短 summary。",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "snippets/pr-review.md"
+    },
+    {
+      "id": "refactor-request",
+      "type": "snippet",
+      "title": "Refactor Request",
+      "description": "低风险重构请求模板，强调行为不变和分阶段验证",
+      "category": "coding",
+      "tags": [
+        "snippet",
+        "coding",
+        "refactor"
+      ],
+      "aliases": [
+        "refactor",
+        "cleanup",
+        "refactor-plan",
+        "重构方案",
+        "代码优化"
+      ],
+      "keywords": [
+        "behavior-preserving",
+        "staged-plan",
+        "risk",
+        "validation",
+        "maintainability",
+        "保持行为",
+        "分阶段",
+        "验证方式"
+      ],
+      "keyword": ";rr",
+      "text": "# Refactor Request\n\n请基于下面代码或需求，给出一个低风险重构方案。\n\n## 当前问题\n\n{{selection}}\n\n## 约束\n\n- 保持现有行为不变。\n- 优先小步提交。\n- 不引入不必要的新抽象。\n\n## 请输出\n\n1. 重构目标。\n2. 分阶段步骤。\n3. 风险点。\n4. 验证方式。",
+      "raycast_text": "# Refactor Request\n\n请基于下面代码或需求，给出一个低风险重构方案。\n\n## 当前问题\n\n{clipboard}\n\n## 约束\n\n- 保持现有行为不变。\n- 优先小步提交。\n- 不引入不必要的新抽象。\n\n## 请输出\n\n1. 重构目标。\n2. 分阶段步骤。\n3. 风险点。\n4. 验证方式。",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "snippets/refactor-request.md"
+    },
+    {
+      "id": "sql-debug",
+      "type": "snippet",
+      "title": "SQL Debug",
+      "description": "SQL 或数据库问题分析模板，关注意图、性能风险和最小修复",
+      "category": "debugging",
+      "tags": [
+        "snippet",
+        "database",
+        "debugging"
+      ],
+      "aliases": [
+        "sql",
+        "database",
+        "db-debug",
+        "SQL排查",
+        "数据库问题"
+      ],
+      "keywords": [
+        "query",
+        "performance",
+        "explain-plan",
+        "index",
+        "correctness",
+        "查询",
+        "性能",
+        "索引"
+      ],
+      "keyword": ";sq",
+      "text": "# SQL Debug\n\n请分析下面 SQL 或数据库问题。\n\n## SQL / 报错\n\n```sql\n{{selection}}\n```\n\n## 请输出\n\n1. SQL 意图。\n2. 可能问题。\n3. 性能风险。\n4. 最小修复。\n5. 如何验证结果正确。",
+      "raycast_text": "# SQL Debug\n\n请分析下面 SQL 或数据库问题。\n\n## SQL / 报错\n\n```sql\n{clipboard}\n```\n\n## 请输出\n\n1. SQL 意图。\n2. 可能问题。\n3. 性能风险。\n4. 最小修复。\n5. 如何验证结果正确。",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "snippets/sql-debug.md"
+    },
+    {
+      "id": "terminal-error",
+      "type": "snippet",
+      "title": "Terminal Error",
+      "description": "终端错误分析模板，输出根因、修复命令和验证方式",
+      "category": "debugging",
+      "tags": [
+        "snippet",
+        "terminal",
+        "debugging"
+      ],
+      "aliases": [
+        "terminal",
+        "shell-error",
+        "cli-error",
+        "终端错误",
+        "命令报错"
+      ],
+      "keywords": [
+        "stderr",
+        "exit-code",
+        "command",
+        "minimal-fix",
+        "verification",
+        "错误输出",
+        "退出码",
+        "最小修复"
+      ],
+      "keyword": ";er",
+      "text": "# Terminal Error\n\n请分析这个终端错误，并给出最小修复步骤。\n\n## 命令和输出\n\n```text\n{{selection}}\n```\n\n## 请按这个格式回答\n\n1. 根因判断。\n2. 最可能的修复命令。\n3. 需要避免的破坏性操作。\n4. 如何验证修复成功。",
+      "raycast_text": "# Terminal Error\n\n请分析这个终端错误，并给出最小修复步骤。\n\n## 命令和输出\n\n```text\n{clipboard}\n```\n\n## 请按这个格式回答\n\n1. 根因判断。\n2. 最可能的修复命令。\n3. 需要避免的破坏性操作。\n4. 如何验证修复成功。",
+      "variables": [
+        "selection"
+      ],
+      "source_path": "snippets/terminal-error.md"
+    }
+  ]
+}
