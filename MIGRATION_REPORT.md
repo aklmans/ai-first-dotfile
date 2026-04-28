@@ -36,6 +36,7 @@
 18. `40d0e1e` `docs: update migration report for post-fix checks`
 19. `669dc55` `docs: update final migration report`
 20. `1559452` `docs: add public usage guide and screenshots plan`
+21. (latest report maintenance) `docs: translate and update migration report`
 
 > Commit count above reflects the migration and documentation sequence up to the public docs snapshot.
 > For current total commit count, use: `git rev-list --count HEAD`.
