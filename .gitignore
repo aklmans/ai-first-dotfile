@@ -58,6 +58,8 @@ home/.config/ai-router/logs/
 **/cache/
 **/logs/
 **/state/
+!templates/gbrain/.env.local.example
+!templates/gbrain/*.example.toml
 **/__pycache__/
 
 ### Obsolete modules / local tool state

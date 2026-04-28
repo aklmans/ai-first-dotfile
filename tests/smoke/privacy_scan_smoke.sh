@@ -2,12 +2,22 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+python_cache_dir="$(mktemp -d)"
+tmp_scan_root="$(mktemp -d)"
+abs_path_matches_file="$tmp_scan_root/absolute-path-matches.txt"
+sensitive_file_names_file="$tmp_scan_root/sensitive-file-names.txt"
+runtime_dir_matches_file="$tmp_scan_root/runtime-dirs.txt"
+trap 'rm -rf "$python_cache_dir" "$tmp_scan_root"' EXIT
 scan_targets=(
   "$repo_root/home"
   "$repo_root/bootstrap"
   "$repo_root/manifests"
   "$repo_root/docs"
   "$repo_root/tests"
+  "$repo_root/README.md"
+  "$repo_root/MIGRATION_PLAN.md"
+  "$repo_root/MIGRATION_REPORT.md"
+  "$repo_root/LICENSE"
 )
 
 assert_no_matches() {
@@ -50,17 +60,16 @@ assert_no_matches \
 
 assert_no_matches \
   'API-like assignment with secret-like value found in migrated files' \
-  "(?i)(api[_-]?key|access[_-]?token|bearer[_-]?token|secret[_-]?token)\\s*[=:]\\s*[\\\"']?[A-Za-z0-9_./:+-]{20,}[\\\"']?" \
+  "(?i)(api[_-]?key|access[_-]?token|bearer[_-]?token|secret[_-]?token)\\s*[=:]\\s*[\\\"']?(?!YOUR_)[A-Za-z0-9_./:+-]{20,}[\\\"']?" \
   "${scan_targets[@]}"
 
 # block suspicious machine-bound absolute paths from migrated sources
-if grep -RIn --binary-files=without-match --exclude="privacy_scan_smoke.sh" '/Users/aklman' "${scan_targets[@]}" > /tmp/privacy_abs_paths.txt; then
-  cat /tmp/privacy_abs_paths.txt >&2
+grep -RIn --binary-files=without-match --exclude="privacy_scan_smoke.sh" '/Users/aklman' "${scan_targets[@]}" > "$abs_path_matches_file" || true
+if [ -s "$abs_path_matches_file" ]; then
+  cat "$abs_path_matches_file" >&2
   printf 'Absolute path leaked in migrated sources\n' >&2
-  rm -f /tmp/privacy_abs_paths.txt
   exit 1
 fi
-rm -f /tmp/privacy_abs_paths.txt
 
 # block runtime and obsolete folders from migration
 assert_path_absent "home/.config/skhd"
@@ -82,28 +91,34 @@ assert_path_absent "docs/tools/wezterm"
 assert_path_absent "docs/tools/oh-my-posh"
 
 # block common sensitive file naming patterns while skipping .git internals
-if find "$repo_root" \( -path "$repo_root/.git" -prune \) -o -type f \( \
-  -iname "*.env*" -o -iname "*secret*" -o -iname "*token*" -o -iname "*backup*" -o -iname "*.bak" \
-\) -print -quit | grep -q '.'; then
+find "$repo_root" \
+  -path "$repo_root/.git" -prune -o \
+  -type f \
+  \( -iname "*.env*" -o -iname "*secret*" -o -iname "*token*" -o -iname "*backup*" -o -iname "*.bak" \) \
+  ! -path "$repo_root/templates/gbrain/.env.local.example" \
+  ! -path "$repo_root/templates/gbrain/codex-config.example.toml" \
+  ! -path "$repo_root/home/.config/ai-router/.env.local.example" \
+  -print > "$sensitive_file_names_file"
+if [ -s "$sensitive_file_names_file" ]; then
   printf 'Sensitive file naming pattern found under repo\n' >&2
-  find "$repo_root" \( -path "$repo_root/.git" -prune \) -o -type f \( \
-    -iname "*.env*" -o -iname "*secret*" -o -iname "*token*" -o -iname "*backup*" -o -iname "*.bak" \
-  \) | head -n 20 >&2
+  head -n 20 "$sensitive_file_names_file" >&2
   exit 1
 fi
 
-if find "$repo_root" \( -path "$repo_root/.git" -prune \) -o -type d \( \
-  -name cache -o -name logs -o -name state \
-\) -print -quit | grep -q '.'; then
+find "$repo_root" \
+  -path "$repo_root/.git" -prune -o \
+  -type d \( -name cache -o -name logs -o -name state \) \
+  -print > "$runtime_dir_matches_file"
+if [ -s "$runtime_dir_matches_file" ]; then
   printf 'Sensitive runtime directory found under repo\n' >&2
-  find "$repo_root" \( -path "$repo_root/.git" -prune \) -o -type d \( \
-    -name cache -o -name logs -o -name state \
-  \) | head -n 20 >&2
+  head -n 20 "$runtime_dir_matches_file" >&2
   exit 1
 fi
 
 # JSON/Python sanity checks
 python3 -m json.tool "$repo_root/home/.config/karabiner/karabiner.json" >/tmp/karabiner.json.lint
+PYTHONDONTWRITEBYTECODE=1 \
+PYTHONPYCACHEPREFIX="$python_cache_dir" \
 python3 -m py_compile "$repo_root/home/.config/ai-router/lib/router_tools.py"
 
 bash "$repo_root/tests/smoke/ai_router_exports_smoke.sh"

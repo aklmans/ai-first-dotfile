@@ -15,9 +15,31 @@ check_script() {
   fi
 }
 
+check_readme_install_scripts_executable() {
+  local tmp_file="/tmp/readme_install_scripts.$$"
+  local script_path
+
+  rg -o '\./bootstrap/[A-Za-z0-9._/-]+\.sh' "$repo_root/README.md" | sort -u > "$tmp_file" || true
+  while IFS= read -r script_path; do
+    script_path="$repo_root/${script_path#./}"
+    if [[ ! -f "$script_path" ]]; then
+      printf 'README references missing install script: %s\n' "$script_path" >&2
+      rm -f "$tmp_file"
+      exit 1
+    fi
+    if [[ ! -x "$script_path" ]]; then
+      printf 'README references non-executable install script: %s\n' "$script_path" >&2
+      rm -f "$tmp_file"
+      exit 1
+    fi
+  done < "$tmp_file"
+  rm -f "$tmp_file"
+}
+
 for script_root in "$repo_root/bootstrap" "$repo_root/tests/smoke"; do
   while IFS= read -r script; do
     check_script "$script"
   done < <(find "$script_root" -type f -name '*.sh' | sort)
 done
 
+check_readme_install_scripts_executable
