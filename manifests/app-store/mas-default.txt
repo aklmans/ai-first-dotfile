@@ -1,0 +1,22 @@
+QReader.MarginStudy.easy	MarginNote 4
+app.spokenly	Spokenly
+cn.better365.AutoSwitchInputPro	AutoSwitchInput Pro
+cn.better365.iRightMousePro	iRightMouse Pro
+cn.better365.iShotPro	iShot Pro
+com.bandisoft.mac.bandizip	Bandizip
+com.criminalbird.typeface	Typeface
+com.culturedcode.ThingsMac	Things3
+com.hp.SmartMac	HP
+com.kingsoft.wpsoffice.mac	wpsoffice
+com.linnk.Linnk	Cubox
+com.lukilabs.lukiapp	Craft
+com.mac.utility.screen.recorder	OmniRecorder
+com.mac.utility.video.player.PotPlayerX	PotPlayerX
+com.nara.gifCreator	GIFfun
+com.renfei.SnippetsLab	SnippetsLab
+com.tinyapp.TablePlus	TablePlus
+com.zykloid.Posterino4	Posterino
+cool.eagle.extension	Eagle for Safari
+de.ixeau.CursorPro	Cursor Pro
+mobi.musicparadise.AudioEditorMac	Audio Editor
+org.zrey.metion	Metion
