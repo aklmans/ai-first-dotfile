@@ -1,15 +1,20 @@
-# IdeaVim 使用指南
+# IdeaVim
 
-配置文件位于 `home/.ideavimrc`。
+`home/.ideavimrc` contains the reusable Vim-mode settings for JetBrains IDEs.
 
-这是 JetBrains 系列 IDE 的 Vim 模式配置，用来统一编辑器内的按键映射、命令和行为。
+## Purpose
 
-## 部署方式
+- keep key behavior consistent with terminal `zsh` and terminal text workflows
+- support quick editing mode in IDEs without tracking IDE runtime data
 
-本仓库以 `home/` 作为 tracked home 目录。部署时，`home/.ideavimrc` 会被同步到 `~/.ideavimrc`。
+## Installation
 
-## 使用说明
+This file is deployed as part of `home/.ideavimrc` by default in this repository layout.
 
-- 这个文件只影响启用了 IdeaVim 的 IDE，不会改动系统级 Vim。
-- 修改后通常需要重载 IDE 配置，或重启 IDE，才能看到新的映射和选项。
-- 如果写入了依赖本机插件或路径的内容，记得保持可移植性，否则在其他机器上可能失效。
+No dedicated installer writes it; it is copied when using your normal home sync flow.
+
+## Notes
+
+- This layer is intentionally configuration-only.
+- Do not copy private workspace files or shared project snapshots into `.ideavimrc`.
+- If IDE runtime behavior differs, keep your local IDE-specific plugins in per-machine overrides and avoid committing full IDE settings.

@@ -1,57 +1,60 @@
-# Current Workflow Overview
+# AI-First Workflow Overview
 
-Last updated: 2026-04-28
+This document summarizes the current public architecture of this repository.
 
 ## Source of truth
 
-All tracked runtime inputs live in:
+- `home/.aerospace.toml`, `home/.config/aerospace/` -> workspace behavior
+- `home/.hammerspoon/` -> local automation flow
+- `home/.config/karabiner/` -> keyboard profile and chord mapping
+- `home/.config/ai-router/` -> prompts/snippets/providers
+- `home/.zshenv`, `home/.config/zsh/` -> shell bootstrap
+- `home/.config/sketchybar/`, `home/.config/borders/` -> desktop UI
+- `home/.config/kaku/`, `home/.config/warp/`, `home/.config/yazi/` -> terminal stack
+- `home/.config/mpv/` -> player behavior
 
-- `home/.aerospace.toml` and `home/.config/aerospace/` (window manager)
-- `home/.hammerspoon/` (runtime automation glue)
-- `home/.config/karabiner/` (keyboard profile)
-- `home/.config/ai-router/` (prompts, snippets, providers, exports)
-- `home/.config/zsh/`, `home/.zshenv` (shell startup + key helpers)
-- `home/.config/sketchybar/`, `home/.config/borders/`
-- `home/.config/kaku/`, `home/.config/warp/`, `home/.config/yazi/`
-- `home/.ideavimrc`, `home/.config/mpv/` (editor/media/app configs)
+`bootstrap/install/*.sh` owns deployment for each module.
 
-`bootstrap/install/*.sh` is the controlled deployment entrypoint for each module.
+## Module responsibilities
 
-## Recommended mental model
+- **AeroSpace + Karabiner**: workspace switching and keyboard entry layer
+- **Hammerspoon + AI Router**: prompt rendering, agent menu flow, and command execution bridge
+- **Shell + Terminal stack**: command line ergonomics and file manager workflows
+- **Desktop UI stack**: status bar and borders
 
-The stack is split by responsibility:
+## Deprecated modules intentionally excluded
 
-- **AeroSpace + Karabiner** define workspace structure, app placement, and modifier semantics.
-- **Hammerspoon** handles lightweight runtime glue (window inheritance, AI hotkey helper integration, and optional palette/agent launch glue).
-- **AI Router** turns selected text into deterministic prompts and exports static snippets.
-- **Terminal layer** remains in Kaku/Starship/Warp with a common deployment path.
-- **Desktop layer** is provided by SketchyBar + Borders.
+- `skhd`
+- `yabai`
+- `wezterm`
+- `oh-my-posh`
 
-## Legacy modules not maintained here
-
-- skhd
-- yabai
-- wezterm
-- oh-my-posh
-
-Their behavior should not be assumed active; only migration-history references are kept in docs where needed.
+Do not assume behavior from these modules in this repository.
 
 ## AeroSpace essentials
 
-- `Ctrl + 1...0` switch workspace 1-10
-- `Ctrl + [` / `Ctrl + ]` switch workspace 11/12
-- `Ctrl + Shift + 1...0` move focused window to workspace 1-10
-- `Ctrl + Shift + [` / `Ctrl + Shift + ]` move focused window to workspace 11/12
-- `Alt + H/J/K/L` move focus in tiled layouts
-- `Ctrl + Alt + R` reload AeroSpace config
-- `Ctrl + Alt + S` reload AeroSpace config without extra resets
+- `Ctrl + 1...0` switch workspace `1..10`
+- `Ctrl + [` / `Ctrl + ]` switch workspace `11/12`
+- `Ctrl + Shift + 1...0` move focused window to target workspace
+- `Ctrl + Shift + [` / `Ctrl + Shift + ]` move focused window to workspace `11/12`
+- `Alt + H/J/K/L` move focus in tiled layout
+- `Ctrl + Left/Right` cycle workspace groups
+- `Ctrl + Up` / `Ctrl + Down` are reserved for Mission Control / App Expose style system workflows, depending on your active keyboard layer.
 
-## AI Router / Hammerspoon / Karabiner relations
+## AI hotkeys summary
 
-- Karabiner `CapsLock` profile is the keyboard entrypoint for prompt and agent actions.
-- Hammerspoon consumes these shortcuts and launches/copies commands for selected providers.
-- AI Router executes prompt rendering and export functions, and owns the static snippet catalogs.
-- Typical flow: select text → prompt render → paste or run via agent chooser.
+- `CapsLock + A/S/T/E/W/F/X/R/G/D/Y/=` render prompt types in the AI Router flow
+- `CapsLock + C` opens the agent chooser
+- `CapsLock + Ctrl + W/I/G/X/H/C/L` are direct app/agent launch chords in this setup
+- `CapsLock + Space` triggers AI workflow palette
+
+## AI Router + Hammerspoon + Karabiner
+
+1. Karabiner creates stable `CapsLock` chords.
+2. Hammerspoon handles the event and triggers local automation.
+3. AI Router renders prompt/agent actions using selected context.
+
+Typical path: select text -> trigger caps command -> render -> paste/run via chooser.
 
 ## Quick checks
 
@@ -62,4 +65,4 @@ python3 -m json.tool home/.config/karabiner/karabiner.json
 bash tests/smoke/repository_structure_smoke.sh
 ```
 
-For full repo checks, see `tests/smoke/*.sh` and run all scripts from the repo root.
+For full smoke checks, run scripts in `tests/smoke/`.
