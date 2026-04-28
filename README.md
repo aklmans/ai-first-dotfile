@@ -6,8 +6,8 @@ MacOS first-class dotfiles with a clean, public-friendly baseline history.
 
 This repository is a sanitized migration of dotfiles from a private source tree into a fresh public history.
 
-- Source: `/Users/aklman/Workspace/Projects/workflow/wow-dotfile-v2`
-- Target: `/Users/aklman/Workspace/Projects/workflow/ai-first-dotfile`
+- Source: `$HOME/Workspace/Projects/workflow/wow-dotfile-v2`
+- Target: `$HOME/Workspace/Projects/workflow/ai-first-dotfile`
 
 Migration goals:
 
@@ -109,4 +109,3 @@ If any legacy leftovers exist locally, they must be treated as optional legacy s
 ## License
 
 MIT — see [LICENSE](LICENSE).
-

@@ -1,8 +1,8 @@
 # Migration Plan: wow-dotfile-v2 -> ai-first-dotfile
 
 ## Source and target
-- Source (old): `/Users/aklman/Workspace/Projects/workflow/wow-dotfile-v2`
-- Target (new): `/Users/aklman/Workspace/Projects/workflow/ai-first-dotfile`
+- Source (old): `$HOME/Workspace/Projects/workflow/wow-dotfile-v2`
+- Target (new): `$HOME/Workspace/Projects/workflow/ai-first-dotfile`
 
 ## Why create a new history
 - Do not import old `.git` objects or commit graph.

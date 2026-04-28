@@ -58,6 +58,7 @@ home/.config/ai-router/logs/
 **/cache/
 **/logs/
 **/state/
+**/__pycache__/
 
 ### Obsolete modules / local tool state
 home/.config/skhd/
