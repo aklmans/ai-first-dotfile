@@ -6,9 +6,15 @@ This repository combines workspace management, desktop UI, terminal defaults, an
 
 ## Preview
 
-| Desktop workspace | AI chooser |
-|---|---|
-| ![Desktop overview with SketchyBar and AeroSpace workspaces](assets/screenshots/desktop-overview.png) | ![CapsLock AI chooser](assets/screenshots/capslock-chooser.png) |
+### Desktop workspace
+
+<img src="assets/screenshots/desktop-overview.png" alt="Desktop overview with SketchyBar and AeroSpace workspaces" width="100%">
+
+### AI chooser
+
+<img src="assets/screenshots/capslock-chooser.png" alt="CapsLock AI chooser" width="100%">
+
+More screenshots are available in [docs/screenshots.md](docs/screenshots.md).
 
 ## What this includes
 

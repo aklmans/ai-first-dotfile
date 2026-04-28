@@ -28,6 +28,48 @@ Use public demo windows and avoid any real names, project paths, logs, tickets, 
 | [`bettertouchtool-gestures.png`](../assets/screenshots/bettertouchtool-gestures.png) | Trackpad gesture configuration for workspace movement. | `docs/tools/bettertouchtool/README.md` |
 | [`karabiner-profile.png`](../assets/screenshots/karabiner-profile.png) | `CapsLock AI Lite` Karabiner profile. | `docs/tools/karabiner/README.md` |
 
+## Gallery
+
+### Desktop overview
+
+![Desktop overview with SketchyBar and AeroSpace workspaces](../assets/screenshots/desktop-overview.png)
+
+### SketchyBar workspace bar
+
+![SketchyBar workspace bar](../assets/screenshots/sketchybar-workspace-bar.png)
+
+### AeroSpace tiling layout
+
+![AeroSpace tiling layout](../assets/screenshots/aerospace-tiling-layout.png)
+
+### AI Router chooser
+
+![AI Router CapsLock chooser](../assets/screenshots/capslock-chooser.png)
+
+### Coding agent chooser
+
+![Coding agent chooser](../assets/screenshots/agent-chooser.png)
+
+### Starship prompt
+
+![Starship prompt](../assets/screenshots/starship-prompt.png)
+
+### Terminal workflow
+
+![Kaku and Warp terminal workflow](../assets/screenshots/kaku-warp-terminal.png)
+
+### Raycast snippet import
+
+![Raycast snippet import](../assets/screenshots/raycast-import.png)
+
+### BetterTouchTool gestures
+
+![BetterTouchTool workspace gestures](../assets/screenshots/bettertouchtool-gestures.png)
+
+### Karabiner profile
+
+![Karabiner CapsLock AI Lite profile](../assets/screenshots/karabiner-profile.png)
+
 ## Screenshot sanitization rules
 
 When you create screenshots for this repository:
