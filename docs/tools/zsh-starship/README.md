@@ -44,6 +44,8 @@ This repository uses `zsh` as the primary shell environment, with `Starship` for
 `home/.config/starship.toml` defines prompt sections, path/git/dir modules, and style.
 If starship is absent, shell init falls back gracefully.
 
+![Starship prompt](../../../assets/screenshots/starship-prompt.png)
+
 ## Local overrides
 
 - `home/.config/zsh/private.zsh` is optional and intentionally not tracked.

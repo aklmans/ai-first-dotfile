@@ -2,6 +2,8 @@
 
 Hammerspoon is the event and workflow glue that connects keyboard shortcuts, AeroSpace state, and AI Router commands.
 
+![Coding agent chooser](../../../assets/screenshots/agent-chooser.png)
+
 ## Installed files
 
 - `home/.hammerspoon/init.lua`

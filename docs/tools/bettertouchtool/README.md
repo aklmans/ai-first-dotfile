@@ -3,6 +3,8 @@
 `BetterTouchTool` is optional in this setup.
 It is used for trackpad/trackpoint gestures that complement AeroSpace workspace movement.
 
+![BetterTouchTool workspace gestures](../../../assets/screenshots/bettertouchtool-gestures.png)
+
 ## Installed files
 
 - `home/.config/bettertouchtool/aerospace-gestures.sh`

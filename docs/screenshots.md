@@ -1,6 +1,6 @@
 # Screenshots
 
-This repository currently focuses on configuration and scripts. Public screenshots are optional and can be added over time.
+This repository includes public screenshots that show the main desktop, workspace, terminal, and AI workflow surfaces.
 
 ## Purpose
 
@@ -11,32 +11,22 @@ Screenshots help new users verify:
 - prompt and chooser UX
 - AI Router exports/import flows
 
-## Recommended screenshot set
+## Included screenshot set
 
 Use public demo windows and avoid any real names, project paths, logs, tickets, or emails.
 
-1. `desktop-overview.png`  
-   Full desktop with workspace bar and app layout.
-2. `sketchybar-workspace-bar.png`  
-   Top bar showing workspace indicator and window title modules.
-3. `aerospace-tiling-layout.png`  
-   Multi-window AeroSpace tiling with workspace labels `1-12`.
-4. `capslock-chooser.png`  
-   AI Router prompt/agent chooser window (`CapsLock + C` / agent flow).
-5. `agent-chooser.png`  
-   Long-running agent command selection.
-6. `starship-prompt.png`  
-   Shell prompt with path, git, and AI helper indicators.
-7. `kaku-warp-terminal.png`  
-   Kaku + Warp terminal split flow.
-8. `raycast-import.png`  
-   Raycast snippet import UI after exporting `ai-router` snippets.
-
-## Current status
-
-- No screenshot files are included yet.
-- Add them when you have a sanitized environment and consented assets.
-- Keep file names under `assets/screenshots/` and reference this list from PR checks.
+| File | Purpose | Referenced from |
+|---|---|---|
+| [`desktop-overview.png`](../assets/screenshots/desktop-overview.png) | Full desktop with workspace bar and app layout. | `README.md` |
+| [`sketchybar-workspace-bar.png`](../assets/screenshots/sketchybar-workspace-bar.png) | Top bar showing workspace indicators and app icons. | `docs/tools/sketchybar/README.md` |
+| [`aerospace-tiling-layout.png`](../assets/screenshots/aerospace-tiling-layout.png) | Multi-window AeroSpace tiling with workspace layout. | `docs/tools/aerospace/README.md` |
+| [`capslock-chooser.png`](../assets/screenshots/capslock-chooser.png) | AI Router prompt chooser. | `README.md`, `docs/tools/ai-router/README.md` |
+| [`agent-chooser.png`](../assets/screenshots/agent-chooser.png) | Long-running coding agent chooser. | `docs/tools/hammerspoon/README.md` |
+| [`starship-prompt.png`](../assets/screenshots/starship-prompt.png) | Shell prompt with path and git context. | `docs/tools/zsh-starship/README.md` |
+| [`kaku-warp-terminal.png`](../assets/screenshots/kaku-warp-terminal.png) | Terminal workflow with Kaku/Warp-oriented configuration. | `docs/tools/terminal/README.md` |
+| [`raycast-import.png`](../assets/screenshots/raycast-import.png) | Raycast snippet import flow for AI Router exports. | `docs/tools/ai-router/README.md` |
+| [`bettertouchtool-gestures.png`](../assets/screenshots/bettertouchtool-gestures.png) | Trackpad gesture configuration for workspace movement. | `docs/tools/bettertouchtool/README.md` |
+| [`karabiner-profile.png`](../assets/screenshots/karabiner-profile.png) | `CapsLock AI Lite` Karabiner profile. | `docs/tools/karabiner/README.md` |
 
 ## Screenshot sanitization rules
 
@@ -57,4 +47,4 @@ If a file currently contains sensitive content:
 ## Asset placement
 
 - `assets/screenshots/README.md`
-- `assets/screenshots/` (future image files)
+- `assets/screenshots/*.png`

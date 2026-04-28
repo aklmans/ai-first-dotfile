@@ -3,6 +3,8 @@
 `AI Router` standardizes prompt rendering, snippet generation, agent selection, and provider execution.
 It is the central automation service used by the CapsLock AI workflow.
 
+![AI Router CapsLock chooser](../../../assets/screenshots/capslock-chooser.png)
+
 ## Installed files
 
 - `home/.config/ai-router/ai-router.sh`
@@ -118,6 +120,8 @@ Expected export artifacts:
 - `exports/ai-router-snippets.json`
 
 Use Raycast import/imported JSON as a runtime workflow bridge.
+
+![Raycast snippet import](../../../assets/screenshots/raycast-import.png)
 
 ## Safety and privacy
 

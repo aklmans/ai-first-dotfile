@@ -3,6 +3,8 @@
 `home/.config/karabiner/karabiner.json` defines the `CapsLock AI Lite` profile used by this setup.
 The profile exposes a minimal but practical `CapsLock`-based command layer.
 
+![Karabiner CapsLock AI Lite profile](../../../assets/screenshots/karabiner-profile.png)
+
 ## Installed files
 
 - `home/.config/karabiner/karabiner.json`

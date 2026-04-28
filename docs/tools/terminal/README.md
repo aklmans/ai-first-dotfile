@@ -3,6 +3,8 @@
 This module covers the shell-first terminal stack:
 `zsh` base environment, `Starship`, `Kaku`, `Warp`, and `Yazi`.
 
+![Kaku and Warp terminal workflow](../../../assets/screenshots/kaku-warp-terminal.png)
+
 ## Installed files
 
 - `home/.config/zsh/*` and `home/.zshenv`

@@ -1,13 +1,8 @@
 # Screenshot Assets
 
-This directory stores optional public screenshots referenced by `docs/screenshots.md`.
+This directory stores public screenshots referenced by `README.md` and `docs/screenshots.md`.
 
-Current status:
-
-- No screenshot files are included in the repository yet.
-- Add sanitized files only, and avoid sensitive project/account data.
-
-Recommended names:
+Included files:
 
 - `desktop-overview.png`
 - `sketchybar-workspace-bar.png`
@@ -17,6 +12,8 @@ Recommended names:
 - `starship-prompt.png`
 - `kaku-warp-terminal.png`
 - `raycast-import.png`
+- `bettertouchtool-gestures.png`
+- `karabiner-profile.png`
 
 ## Naming and hygiene
 

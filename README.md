@@ -4,6 +4,12 @@ A practical macOS dotfiles setup for keyboard-driven workspaces, a compact deskt
 
 This repository combines workspace management, desktop UI, terminal defaults, and a local AI prompt/agent workflow into one documented dotfiles setup.
 
+## Preview
+
+| Desktop workspace | AI chooser |
+|---|---|
+| ![Desktop overview with SketchyBar and AeroSpace workspaces](assets/screenshots/desktop-overview.png) | ![CapsLock AI chooser](assets/screenshots/capslock-chooser.png) |
+
 ## What this includes
 
 - **Workspace automation**: `AeroSpace` layouts, display-aware workspace keys, and optional `BetterTouchTool` gestures.

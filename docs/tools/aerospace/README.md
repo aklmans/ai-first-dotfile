@@ -3,6 +3,8 @@
 AeroSpace is the desktop tiling engine for this setup.
 It provides predictable workspace keys, quick window movement, and deterministic app placement for the desktop layer.
 
+![AeroSpace tiling layout](../../../assets/screenshots/aerospace-tiling-layout.png)
+
 ## Installed files
 
 - `home/.aerospace.toml`

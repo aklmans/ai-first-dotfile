@@ -2,6 +2,8 @@
 
 `SketchyBar` plus `Borders` is the lightweight desktop UI layer for the AI-first workflow.
 
+![SketchyBar workspace bar](../../../assets/screenshots/sketchybar-workspace-bar.png)
+
 ## Installed files
 
 - `home/.config/sketchybar/`
@@ -30,10 +32,6 @@ brew services restart borders
 - No user session state is tracked in this repo.
 - SketchyBar plugin cache/sockets are runtime-only and recreated per machine.
 - Border style is reproducible from `bordersrc` and can be adjusted safely.
-
-## Screenshot target
-
-See `docs/screenshots.md` for the recommended `SketchyBar workspace bar` shot.
 
 ## Privacy notes
 
