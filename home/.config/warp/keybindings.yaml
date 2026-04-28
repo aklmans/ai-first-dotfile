@@ -1,0 +1,5 @@
+---
+"workspace:toggle_ai_assistant": ctrl-shift-I
+"terminal:ask_ai_assistant": none
+"input:toggle_workflows": ctrl-shift-R
+"workspace:open_warp_drive": alt-2
