@@ -1,0 +1,145 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+AEROSPACE_CONFIG="$HOME/.aerospace.toml"
+AEROSPACE_DIR="$HOME/.config/aerospace"
+SKETCHYBAR_PLUGINS="$HOME/.config/sketchybar/plugins"
+HAMMERSPOON_CONFIG="$HOME/.hammerspoon/init.lua"
+
+issues=0
+warnings=0
+
+ok() {
+    printf 'OK    %s\n' "$*"
+}
+
+warn() {
+    printf 'WARN  %s\n' "$*"
+    warnings=$((warnings + 1))
+}
+
+fail() {
+    printf 'FAIL  %s\n' "$*"
+    issues=$((issues + 1))
+}
+
+check_command() {
+    local command_name="$1"
+    if command -v "$command_name" >/dev/null 2>&1; then
+        ok "command available: $command_name"
+    else
+        fail "command missing: $command_name"
+    fi
+}
+
+run_check() {
+    local label="$1"
+    shift
+
+    local output
+    if output="$("$@" 2>&1)"; then
+        ok "$label"
+    else
+        fail "$label"
+        if [ -n "$output" ]; then
+            printf '%s\n' "$output" | sed 's/^/      /' | head -n 6
+        fi
+    fi
+}
+
+check_file_executable() {
+    local path="$1"
+    if [ -x "$path" ]; then
+        ok "executable: $path"
+    elif [ -e "$path" ]; then
+        fail "not executable: $path"
+    else
+        fail "missing: $path"
+    fi
+}
+
+check_app_rules_drift() {
+    local generated current generated_clean current_clean
+    generated="$(mktemp)"
+    current="$(mktemp)"
+    generated_clean="$(mktemp)"
+    current_clean="$(mktemp)"
+
+    "$AEROSPACE_DIR/app-defaults.sh" --toml > "$generated"
+    awk '
+        /^# Application placement and floating rules\./ { capture = 1 }
+        /^\[mode\.main\.binding\]/ { capture = 0 }
+        capture { print }
+    ' "$AEROSPACE_CONFIG" > "$current"
+
+    grep -v '^[[:space:]]*$' "$generated" > "$generated_clean"
+    grep -v '^[[:space:]]*$' "$current" > "$current_clean"
+
+    if diff -q "$generated_clean" "$current_clean" >/dev/null 2>&1; then
+        ok "AeroSpace app rules match app-defaults.sh"
+    else
+        fail "AeroSpace app rules drift from app-defaults.sh"
+        diff -u "$current_clean" "$generated_clean" | head -n 40 | sed 's/^/      /'
+    fi
+
+    rm -f "$generated" "$current" "$generated_clean" "$current_clean"
+}
+
+printf 'AeroSpace desktop environment doctor\n\n'
+
+check_command aerospace
+check_command sketchybar
+check_command hs
+check_command lua
+
+printf '\nCore services\n'
+run_check "AeroSpace server responds" aerospace list-monitors --count
+run_check "AeroSpace config dry-run" aerospace reload-config --dry-run --no-gui
+run_check "SketchyBar responds" sketchybar --query bar
+run_check "Hammerspoon CLI responds" hs -c 'return true'
+
+printf '\nSyntax\n'
+run_check "Hammerspoon Lua syntax" lua -e "assert(loadfile('$HAMMERSPOON_CONFIG'))"
+run_check "app-defaults.sh syntax" bash -n "$AEROSPACE_DIR/app-defaults.sh"
+run_check "focus-workspace-arrow.sh syntax" bash -n "$AEROSPACE_DIR/focus-workspace-arrow.sh"
+run_check "reset-apps-to-default-workspaces.sh syntax" bash -n "$AEROSPACE_DIR/reset-apps-to-default-workspaces.sh"
+run_check "check-display-layout.sh syntax" bash -n "$AEROSPACE_DIR/check-display-layout.sh"
+run_check "aerospace_spaces.sh syntax" bash -n "$SKETCHYBAR_PLUGINS/aerospace_spaces.sh"
+run_check "layout plugin syntax" bash -n "$SKETCHYBAR_PLUGINS/aerospace_layout.sh"
+
+printf '\nLayout\n'
+run_check "display layout matches profile" "$AEROSPACE_DIR/check-display-layout.sh"
+check_app_rules_drift
+
+printf '\nFiles\n'
+check_file_executable "$AEROSPACE_DIR/app-defaults.sh"
+check_file_executable "$AEROSPACE_DIR/focus-workspace-arrow.sh"
+check_file_executable "$AEROSPACE_DIR/reset-apps-to-default-workspaces.sh"
+check_file_executable "$AEROSPACE_DIR/check-display-layout.sh"
+check_file_executable "$SKETCHYBAR_PLUGINS/aerospace_spaces.sh"
+check_file_executable "$SKETCHYBAR_PLUGINS/aerospace_layout.sh"
+
+printf '\nSystem preferences\n'
+if defaults read -g NSWindowShouldDragOnGesture >/dev/null 2>&1; then
+    drag_enabled="$(defaults read -g NSWindowShouldDragOnGesture 2>/dev/null || true)"
+    if [ "$drag_enabled" = "1" ]; then
+        ok "native Ctrl+Cmd window drag is enabled"
+    else
+        warn "native Ctrl+Cmd window drag is not enabled"
+    fi
+else
+    warn "native Ctrl+Cmd window drag preference is unset"
+fi
+
+printf '\nSummary\n'
+if [ "$issues" -eq 0 ]; then
+    printf 'OK: no blocking issues'
+    if [ "$warnings" -gt 0 ]; then
+        printf ', %s warning(s)' "$warnings"
+    fi
+    printf '.\n'
+    exit 0
+fi
+
+printf 'FAIL: %s issue(s), %s warning(s).\n' "$issues" "$warnings"
+exit 1

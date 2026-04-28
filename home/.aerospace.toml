@@ -1,0 +1,263 @@
+config-version = 2
+start-at-login = true
+
+after-startup-command = ['exec-and-forget sketchybar']
+
+exec-on-workspace-change = [
+    '/bin/bash',
+    '-c',
+    '/opt/homebrew/bin/sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE PREV_WORKSPACE=$AEROSPACE_PREV_WORKSPACE'
+]
+
+on-focus-changed = [
+    'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh'
+]
+
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+accordion-padding = 30
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+on-focused-monitor-changed = []
+automatically-unhide-macos-hidden-apps = false
+
+persistent-workspaces = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+
+[workspace-to-monitor-force-assignment]
+    '1' = ['24V5C2', 'built-in', 'main']
+    '2' = ['24V5C2', 'built-in', 'main']
+    '3' = ['24V5C2', 'built-in', 'main']
+    '4' = ['24V5C2', 'built-in', 'main']
+    '5' = ['24V5C2', 'built-in', 'main']
+    '6' = ['24V5C2', 'built-in', 'main']
+    '7' = ['PHL 279C9', 'secondary', 'main']
+    '8' = ['PHL 279C9', 'secondary', 'main']
+    '9' = ['PHL 279C9', 'secondary', 'main']
+    '10' = ['PHL 279C9', 'secondary', 'main']
+    '11' = ['PHL 279C9', 'secondary', 'main']
+    '12' = ['PHL 279C9', 'secondary', 'main']
+
+[key-mapping]
+    preset = 'qwerty'
+
+[gaps]
+    inner.horizontal = 8
+    inner.vertical = 8
+    outer.left = 20
+    outer.bottom = 20
+    outer.top = [
+        { monitor."Built-in Retina Display" = 88 },
+        { monitor."24V5C2" = 88 },
+        { monitor."PHL 279C9" = 95 },
+        88
+    ]
+    outer.right = 20
+
+# Application placement and floating rules.
+# Keep this block aligned with ~/.config/aerospace/app-defaults.sh.
+
+# Common secondary/dialog windows should stay with the workspace that opened them.
+[[on-window-detected]]
+    if.window-title-regex-substring = '^(Settings|Preferences|Options|About|Licenses|Choose|Select|Open|Save|Save As|Export|Import|Find|Replace|Print|Search|Keyboard Shortcuts|Extensions|Plugins|Account|Profile|Sign in|Login|设置|偏好设置|选项|关于|打开|保存|导出|导入|查找|替换|打印|账户|登录)( |$|:|-)'
+    run = 'layout floating'
+
+# JetBrains: keep main IDE windows tiled, but float obvious dialogs/tool windows.
+[[on-window-detected]]
+    if.app-name-regex-substring = '^(GoLand|IntelliJ IDEA|IntelliJ IDEA-EAP|WebStorm|PhpStorm|RustRover|PyCharm|CLion|DataGrip|Rider|Android Studio)$'
+    if.window-title-regex-substring = '^(Welcome to|Settings|Preferences|Project Structure|Run/Debug Configurations|Edit Configuration|Plugins|Tip of the Day|New Project|Open File or Project|Attach Directory|About|Licenses|Choose|Select|Import|Export|Find|Replace|Search Everywhere|Commit|Push|Pull|Merge|Rebase|Checkout|Branch)'
+    run = 'layout floating'
+
+# Float apps that should behave like utility/dialog surfaces, then continue to placement rules.
+[[on-window-detected]]
+    if.app-name-regex-substring = '^(Finder|访达|System Settings|System Preferences|系统设置|Activity Monitor|监视器|Stats|Mail|邮件|Photos|照片|Preview|预览|Microsoft PowerPoint|Keynote.*)$'
+    check-further-callbacks = true
+    run = 'layout floating'
+
+[[on-window-detected]]
+    if.app-name-regex-substring = '^(微信|WeChat|企业微信|WeCom|QQ|钉钉|DingTalk|飞书|Feishu|Lark|Lark Meetings|zoom\.us|Mattermost|Messenger|Discord|BaiduIM)$'
+    check-further-callbacks = true
+    run = 'layout floating'
+
+[[on-window-detected]]
+    if.app-name-regex-substring = '^(Dash|Navicat Premium|1Password|Alfred Preferences|Karabiner-Elements|Karabiner-EventViewer|Things|Pieces|Loopback|Downie 4|CleanMyMac X|Tencent Lemon|AppCleaner|Clash for Windows)$'
+    check-further-callbacks = true
+    run = 'layout floating'
+
+[[on-window-detected]]
+    if.app-name-regex-substring = '^(NeteaseMusic|Music|音乐|Spotify|哔哩哔哩|mpv|Podcasts|播客)$'
+    check-further-callbacks = true
+    run = 'layout floating'
+
+# Primary work/browser/AI windows should stay tiled, even if the app restored a floating state.
+[[on-window-detected]]
+    if.app-name-regex-substring = '^(Warp|Kaku|Cursor|Visual Studio Code|Code|Code - Insiders|Sublime Text|GoLand|IntelliJ IDEA|IntelliJ IDEA-EAP|WebStorm|PhpStorm|RustRover|PyCharm|CLion|DataGrip|Rider|Android Studio|Arc|Dia|Safari|Microsoft Edge|Google Chrome|Firefox|Zen|Obsidian|MiaoYan|Claude|ChatGPT|ChatGPT Atlas|Gemini)$'
+    check-further-callbacks = true
+    run = 'layout tiling'
+
+# Exact app-id placement for stable apps.
+[[on-window-detected]]
+    if.app-id = 'com.openai.atlas'
+    run = 'move-node-to-workspace 10'
+
+[[on-window-detected]]
+    if.app-id = 'com.google.GeminiMacOS'
+    run = 'move-node-to-workspace 10'
+
+[[on-window-detected]]
+    if.app-id = 'dev.warp.Warp-Stable'
+    run = 'move-node-to-workspace 7'
+
+[[on-window-detected]]
+    if.app-id = 'fun.tw93.kaku'
+    run = 'move-node-to-workspace 7'
+
+[[on-window-detected]]
+    if.app-id = 'com.sublimetext.4'
+    run = 'move-node-to-workspace 7'
+
+[[on-window-detected]]
+    if.app-id = 'com.microsoft.edgemac'
+    run = 'move-node-to-workspace 8'
+
+[[on-window-detected]]
+    if.app-id = 'company.thebrowser.dia'
+    run = 'move-node-to-workspace 8'
+
+[[on-window-detected]]
+    if.app-id = 'com.tw93.miaoyan'
+    run = 'move-node-to-workspace 9'
+
+[[on-window-detected]]
+    if.app-id = 'com.lbyczf.clashwin'
+    run = 'move-node-to-workspace 5'
+
+[[on-window-detected]]
+    if.app-id = 'com.apple.systempreferences'
+    run = 'move-node-to-workspace 5'
+
+[[on-window-detected]]
+    if.app-id = 'com.apple.finder'
+    run = 'move-node-to-workspace 6'
+
+[[on-window-detected]]
+    if.app-id = 'com.tencent.xinWeChat'
+    run = 'move-node-to-workspace 2'
+
+# Fallback app-name placement for apps that may have unstable or unknown bundle ids.
+[[on-window-detected]]
+    if.app-name-regex-substring = '^(NeteaseMusic|Music|音乐|Spotify|哔哩哔哩|mpv|Podcasts|播客)$'
+    run = 'move-node-to-workspace 1'
+
+[[on-window-detected]]
+    if.app-name-regex-substring = '^(微信|WeChat|企业微信|WeCom|QQ|钉钉|DingTalk|飞书|Feishu|Lark|Lark Meetings|zoom\.us|Mattermost|Messenger|Discord|BaiduIM)$'
+    run = 'move-node-to-workspace 2'
+
+[[on-window-detected]]
+    if.app-name-regex-substring = '^(Mail|邮件)$'
+    run = 'move-node-to-workspace 3'
+
+[[on-window-detected]]
+    if.app-name-regex-substring = '^(Activity Monitor|监视器|Stats)$'
+    run = 'move-node-to-workspace 4'
+
+[[on-window-detected]]
+    if.app-name-regex-substring = '^(Dash|Navicat Premium|1Password|System Settings|System Preferences|系统设置|Alfred Preferences|Karabiner-Elements|Karabiner-EventViewer|Things|Pieces|Loopback|Downie 4|CleanMyMac X|Tencent Lemon|AppCleaner|Clash for Windows)$'
+    run = 'move-node-to-workspace 5'
+
+[[on-window-detected]]
+    if.app-name-regex-substring = '^(Finder|访达|Photos|照片)$'
+    run = 'move-node-to-workspace 6'
+
+[[on-window-detected]]
+    if.app-name-regex-substring = '^(Warp|Kaku|Cursor|Visual Studio Code|Code|Code - Insiders|Sublime Text|GoLand|IntelliJ IDEA|IntelliJ IDEA-EAP|WebStorm|PhpStorm|RustRover|PyCharm|CLion|DataGrip|Rider|Android Studio)$'
+    run = 'move-node-to-workspace 7'
+
+[[on-window-detected]]
+    if.app-name-regex-substring = '^(Arc|Dia|Safari|Microsoft Edge|Google Chrome|Firefox|Zen)$'
+    run = 'move-node-to-workspace 8'
+
+[[on-window-detected]]
+    if.app-name-regex-substring = '^(Obsidian|Preview|预览|Microsoft PowerPoint|Keynote.*|MiaoYan)$'
+    run = 'move-node-to-workspace 9'
+
+[[on-window-detected]]
+    if.app-name-regex-substring = '^(Claude|ChatGPT|ChatGPT Atlas|Gemini)$'
+    run = 'move-node-to-workspace 10'
+[mode.main.binding]
+    alt-h = 'focus left'
+    alt-j = 'focus down'
+    alt-k = 'focus up'
+    alt-l = 'focus right'
+
+    alt-shift-h = ['swap left', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    alt-shift-j = ['swap down', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    alt-shift-k = ['swap up', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    alt-shift-l = ['swap right', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+
+    alt-slash = 'layout tiles horizontal vertical'
+    alt-comma = 'layout accordion horizontal vertical'
+    alt-n = 'focus dfs-next'
+    alt-p = 'focus dfs-prev'
+    alt-f = ['fullscreen', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    alt-shift-f = 'macos-native-fullscreen'
+    alt-minus = 'resize smart -50'
+    alt-equal = 'resize smart +50'
+    alt-shift-e = 'balance-sizes'
+    alt-shift-r = ['flatten-workspace-tree', 'layout vertical horizontal', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    alt-shift-y = ['layout horizontal', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    alt-shift-x = ['layout vertical', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    alt-shift-t = ['layout floating tiling', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    alt-shift-v = ['layout tiles horizontal vertical', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+
+    ctrl-alt-f = ['fullscreen', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    ctrl-alt-left = 'resize width -50'
+    ctrl-alt-right = 'resize width +50'
+    ctrl-alt-down = 'resize height +50'
+    ctrl-alt-up = 'resize height -50'
+    ctrl-alt-h = ['move left', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    ctrl-alt-j = ['move down', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    ctrl-alt-k = ['move up', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    ctrl-alt-l = ['move right', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+
+    ctrl-1 = 'workspace 1'
+    ctrl-2 = 'workspace 2'
+    ctrl-3 = 'workspace 3'
+    ctrl-4 = 'workspace 4'
+    ctrl-5 = 'workspace 5'
+    ctrl-6 = 'workspace 6'
+    ctrl-7 = 'workspace 7'
+    ctrl-8 = 'workspace 8'
+    ctrl-9 = 'workspace 9'
+    ctrl-0 = 'workspace 10'
+    ctrl-leftSquareBracket = 'workspace 11'
+    ctrl-rightSquareBracket = 'workspace 12'
+
+    ctrl-shift-1 = ['move-node-to-workspace --focus-follows-window 1', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    ctrl-shift-2 = ['move-node-to-workspace --focus-follows-window 2', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    ctrl-shift-3 = ['move-node-to-workspace --focus-follows-window 3', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    ctrl-shift-4 = ['move-node-to-workspace --focus-follows-window 4', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    ctrl-shift-5 = ['move-node-to-workspace --focus-follows-window 5', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    ctrl-shift-6 = ['move-node-to-workspace --focus-follows-window 6', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    ctrl-shift-7 = ['move-node-to-workspace --focus-follows-window 7', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    ctrl-shift-8 = ['move-node-to-workspace --focus-follows-window 8', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    ctrl-shift-9 = ['move-node-to-workspace --focus-follows-window 9', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    ctrl-shift-0 = ['move-node-to-workspace --focus-follows-window 10', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    ctrl-shift-leftSquareBracket = ['move-node-to-workspace --focus-follows-window 11', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    ctrl-shift-rightSquareBracket = ['move-node-to-workspace --focus-follows-window 12', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+
+    alt-tab = 'workspace-back-and-forth'
+    ctrl-left = 'exec-and-forget /bin/bash $HOME/.config/aerospace/focus-workspace-arrow.sh prev'
+    ctrl-right = 'exec-and-forget /bin/bash $HOME/.config/aerospace/focus-workspace-arrow.sh next'
+    ctrl-up = 'exec-and-forget /bin/bash $HOME/.config/aerospace/macos-control.sh mission-control'
+    ctrl-down = 'exec-and-forget /bin/bash $HOME/.config/aerospace/macos-control.sh app-expose'
+    alt-s = 'focus-monitor left'
+    alt-g = 'focus-monitor right'
+    alt-shift-s = ['move-node-to-monitor left', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    alt-shift-g = ['move-node-to-monitor right', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+
+    ctrl-alt-0 = ['exec-and-forget bash ~/.config/aerospace/reset-apps-to-default-workspaces.sh', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    ctrl-alt-r = ['reload-config', 'exec-and-forget sketchybar --reload']
+    ctrl-alt-s = 'reload-config'
+    ctrl-alt-y = 'enable toggle'
+    alt-shift-space = 'exec-and-forget sketchybar --bar hidden=toggle'
