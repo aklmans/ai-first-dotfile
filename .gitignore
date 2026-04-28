@@ -1,0 +1,68 @@
+### VisualStudioCode
+.vscode/
+
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix
+
+### JetBrains template
+.idea/
+
+### macOS
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+### Project-local assets
+obsidian/Obsidian/Fonts/
+obsidian/Obsidian/.obsidian/workspace.json
+obsidian/Obsidian/.obsidian/plugins/*/*
+!obsidian/Obsidian/.obsidian/plugins/*/manifest.json
+!obsidian/Obsidian/.obsidian/plugins/*/data.json
+
+### AI Workflow Router runtime state
+home/.config/ai-router/catalogs/
+home/.config/ai-router/cache/
+home/.config/ai-router/state/
+home/.config/ai-router/logs/
+
+### Privacy and local runtime artifacts
+.env*
+*.bak
+*.backup*
+**/cache/
+**/logs/
+**/state/
+
+### Obsolete modules / local tool state
+home/.config/skhd/
+home/.config/yabai/
+home/.config/wezterm/
+home/.config/oh-my-posh/
+bootstrap/install/warp-launch-agent.sh
+home/.config/aerospace/warp-launch-agent.sh
