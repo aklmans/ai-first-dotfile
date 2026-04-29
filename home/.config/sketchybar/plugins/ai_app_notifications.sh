@@ -445,11 +445,17 @@ append_app_args() {
   if [ "${count:-0}" -gt 0 ]; then
     args+=(--set "$item" \
       icon="$icon" \
+      icon.font="sketchybar-app-font:Regular:16.0" \
       icon.color=$BLUE \
+      icon.padding_left=10 \
+      icon.padding_right=6 \
       label="$count" \
       label.drawing=on \
-      label.width=10 \
+      label.font="SF Pro:Black:17.0" \
+      label.width=24 \
       label.color=$WHITE \
+      label.padding_left=2 \
+      label.padding_right=10 \
       drawing=on \
       background.drawing=off)
 
@@ -505,11 +511,17 @@ update_bar() {
     args+=(--set ai_notify.total \
       drawing=on \
       icon=$BELL \
+      icon.font="SF Pro:Bold:15.0" \
       icon.color=$GREY \
+      icon.padding_left=10 \
+      icon.padding_right=6 \
       label=0 \
       label.drawing=on \
-      label.width=10 \
-      label.color=$WHITE)
+      label.font="SF Pro:Black:17.0" \
+      label.width=24 \
+      label.color=$WHITE \
+      label.padding_left=2 \
+      label.padding_right=10)
     args+=(--set ai_notify.popup.empty \
       drawing=on \
       icon=$BELL \
@@ -523,11 +535,17 @@ update_bar() {
     args+=(--set ai_notify.total \
       drawing=on \
       icon=$BELL_DOT \
+      icon.font="SF Pro:Bold:15.0" \
       icon.color=$BLUE \
+      icon.padding_left=10 \
+      icon.padding_right=6 \
       label="$total" \
       label.drawing=on \
-      label.width=10 \
-      label.color=$WHITE)
+      label.font="SF Pro:Black:17.0" \
+      label.width=24 \
+      label.color=$WHITE \
+      label.padding_left=2 \
+      label.padding_right=10)
     args+=(--set ai_notify.popup.empty drawing=off)
   fi
 
