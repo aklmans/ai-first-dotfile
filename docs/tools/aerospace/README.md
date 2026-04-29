@@ -29,6 +29,7 @@ These are the workspace-level shortcuts documented in this repo:
 - `Ctrl + Shift + [` / `Ctrl + Shift + ]` -> move focused window to workspace 11/12
 - `Ctrl + Left/Right` -> cycle workspace groups by monitor split logic
 - `Alt + H/J/K/L` -> move focus inside the active layout
+- `Option + Shift + Space` -> hide/show SketchyBar and compact/restore the AeroSpace top gap
 
 ## Useful commands
 
@@ -49,6 +50,7 @@ aerospace reload-config --dry-run --no-gui
 - App placement defaults are intentionally generated from tracked config, not from local session state.
 - `home/.config/aerospace/warp-launch-agent.sh` is intentionally not tracked.
 - `home/.config/aerospace/reveal-app.sh` jumps to and focuses the workspace window for a bundle id. SketchyBar AI attention badges use it for app reveal actions.
+- `home/.config/aerospace/toggle-sketchybar-space.sh` keeps SketchyBar visibility and AeroSpace `outer.top` in sync. Hidden mode uses a compact top gap; visible mode restores the display-aware bar gap.
 - `home/.config/ai-router/...` runtime data is intentionally excluded.
 
 ## Relationship to other modules

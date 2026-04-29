@@ -17,6 +17,7 @@
 - Visual themes and runtime helper scripts in `home/.config/sketchybar/` and `home/.config/borders/bordersrc`.
 - AeroSpace workspace integration via plugin callbacks.
 - AI attention indicators for selected tools and IDEs.
+- `Option + Shift + Space` hides/shows SketchyBar through AeroSpace and also updates the AeroSpace top gap so windows reclaim or release the bar area.
 - Optional font fetch for the bar icon font and symbols.
 
 ## Install and refresh

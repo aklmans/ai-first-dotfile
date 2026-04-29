@@ -162,6 +162,7 @@ Grant the following permissions when prompted (System Settings → Privacy & Sec
 | `Ctrl + Left/Right` | Cycle workspace groups |
 | `Ctrl + Up/Down` | Mission Control / App Exposé |
 | `Alt + H/J/K/L` | Move focus in tiled layout |
+| `Option + Shift + Space` | Toggle SketchyBar and matching AeroSpace top gap |
 
 ### AI hotkeys (CapsLock layer)
 
