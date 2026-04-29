@@ -8,6 +8,7 @@ stamp="$(date +%Y%m%d_%H%M%S)"
 
 ensure_parent_dir "$HOME/.config/sketchybar"
 mkdir -p "$HOME/Library/Fonts"
+mkdir -p "$HOME/Library/Caches/sketchybar"
 
 echo "Installing Sketchybar"
 
@@ -38,5 +39,14 @@ deploy_repo_path "$repo_root" "home/.config/sketchybar" "$HOME/.config/sketchyba
 
 echo "Starting Sketchybar"
 brew services restart sketchybar
+
+cat <<'EOF'
+
+SketchyBar AI notification notes:
+- Runtime attention state is stored in ~/Library/Caches/sketchybar, not in ~/.config/sketchybar.
+- To let SketchyBar read macOS notification metadata, grant Full Disk Access to SketchyBar:
+  System Settings -> Privacy & Security -> Full Disk Access -> add /opt/homebrew/bin/sketchybar
+- macOS TCC permissions cannot be granted silently by this script.
+EOF
 
 echo "Finished setting up"

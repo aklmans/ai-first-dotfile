@@ -9,6 +9,9 @@
 
 ### JetBrains template
 .idea/
+.junie/
+.codex/
+.claude/
 
 ### macOS
 # General

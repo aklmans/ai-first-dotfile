@@ -84,14 +84,18 @@ require_file home/.config/ai-router/providers/warp-agent.sh
 
 require_file home/.config/sketchybar/sketchybarrc
 require_file home/.config/sketchybar/colors.sh
+require_file home/.config/sketchybar/items/ai_notifications.sh
+require_file home/.config/sketchybar/plugins/ai_app_notifications.sh
 require_file home/.config/borders/bordersrc
 require_file home/.config/aerospace/app-defaults.sh
+require_file home/.config/aerospace/reveal-app.sh
 require_file home/.aerospace.toml
 
 require_file home/.config/karabiner/karabiner.json
 require_file home/.config/karabiner/CapsLock-AI-Lite.md
 require_file home/.hammerspoon/init.lua
 require_file home/.hammerspoon/ai_hotkeys.lua
+require_file home/.hammerspoon/app_reveal.lua
 require_file home/.config/mpv/mpv.conf
 require_file home/.config/mpv/input.conf
 require_file bootstrap/brew.sh

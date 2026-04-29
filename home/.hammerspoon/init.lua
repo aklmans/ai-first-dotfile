@@ -5,7 +5,9 @@ if hs.ipc then
 end
 
 local aerospace = "/opt/homebrew/bin/aerospace"
+local sketchybar = "/opt/homebrew/bin/sketchybar"
 local sketchybarUpdater = os.getenv("HOME") .. "/.config/sketchybar/plugins/aerospace_spaces.sh"
+local sketchybarNotifications = os.getenv("HOME") .. "/.config/sketchybar/plugins/ai_app_notifications.sh"
 local logPath = "/tmp/hammerspoon-workspace-inherit.log"
 local maxLogBytes = 256 * 1024
 local inheritWindowSeconds = 10
@@ -19,6 +21,16 @@ local focusRefreshTimer = nil
 local focusQueryRunning = false
 local focusQueryQueued = false
 local workspaceSettleTimer = nil
+local aiNotificationRefreshRunning = false
+local aiNotificationRefreshStartedAt = 0
+local aiNotificationClearTimers = {}
+local aiNotificationLastClearAt = {}
+local aiAttentionAppByBundle = {
+  ["dev.warp.Warp-Stable"] = "warp",
+  ["com.openai.codex"] = "codex",
+  ["com.jetbrains.intellij"] = "idea",
+  ["com.jetbrains.goland"] = "goland",
+}
 
 local function log(message)
   local attrs = hs.fs.attributes(logPath)
@@ -241,6 +253,86 @@ local function refreshSketchyBar()
   end
 end
 
+local function refreshAINotifications()
+  if hs.fs.attributes(sketchybarNotifications, "mode") ~= "file" then
+    return
+  end
+
+  if aiNotificationRefreshRunning then
+    if hs.timer.secondsSinceEpoch() - aiNotificationRefreshStartedAt < 15 then
+      return
+    end
+
+    if _G.wowAINotificationRefreshTask and _G.wowAINotificationRefreshTask:isRunning() then
+      _G.wowAINotificationRefreshTask:terminate()
+    end
+
+    log("ai notification refresh timed out; restarting")
+    aiNotificationRefreshRunning = false
+    _G.wowAINotificationRefreshTask = nil
+  end
+
+  aiNotificationRefreshRunning = true
+  aiNotificationRefreshStartedAt = hs.timer.secondsSinceEpoch()
+  _G.wowAINotificationRefreshTask = hs.task.new(sketchybarNotifications, function(exitCode, stdout, stderr)
+    aiNotificationRefreshRunning = false
+    _G.wowAINotificationRefreshTask = nil
+    if exitCode ~= 0 then
+      log("ai notification refresh failed exit=" .. tostring(exitCode) .. " stderr=" .. (stderr or ""))
+    end
+  end, { "paint" })
+  _G.wowAINotificationRefreshTask:start()
+end
+
+local function triggerAINotificationSync()
+  if hs.fs.attributes(sketchybar, "mode") == "file" then
+    hs.task.new(sketchybar, nil, { "--trigger", "ai_notification_sync" }):start()
+  end
+end
+
+local function requestClearAINotification(app)
+  local now = hs.timer.secondsSinceEpoch()
+  if aiNotificationLastClearAt[app] and now - aiNotificationLastClearAt[app] < 2 then
+    return
+  end
+
+  if hs.fs.attributes(sketchybarNotifications, "mode") ~= "file" then
+    return
+  end
+
+  aiNotificationLastClearAt[app] = now
+  hs.task.new(sketchybarNotifications, function(exitCode, stdout, stderr)
+    if exitCode ~= 0 then
+      log("ai notification clear request failed app=" .. tostring(app) .. " exit=" .. tostring(exitCode) .. " stderr=" .. (stderr or ""))
+      return
+    end
+
+    triggerAINotificationSync()
+    hs.timer.doAfter(0.7, refreshAINotifications)
+  end, { "request-clear", app }):start()
+end
+
+local function scheduleClearAINotificationForBundle(bundleID)
+  local app = bundleID and aiAttentionAppByBundle[bundleID]
+  if not app then
+    return
+  end
+
+  if aiNotificationClearTimers[app] then
+    aiNotificationClearTimers[app]:stop()
+  end
+
+  aiNotificationClearTimers[app] = hs.timer.doAfter(0.5, function()
+    aiNotificationClearTimers[app] = nil
+    requestClearAINotification(app)
+  end)
+end
+
+local function scheduleClearAINotificationForFrontmostApp()
+  local app = hs.application.frontmostApplication()
+  scheduleClearAINotificationForBundle(app and app:bundleID())
+end
+
 local function scheduleWorkspaceSettle(delay)
   if workspaceSettleTimer then
     workspaceSettleTimer:stop()
@@ -332,8 +424,10 @@ local function inheritWorkspaceForCreatedWindow(win)
   end)
 end
 
-hs.window.filter.default:subscribe(hs.window.filter.windowFocused, function()
+hs.window.filter.default:subscribe(hs.window.filter.windowFocused, function(win)
   scheduleRememberFocusedWindow(0.05)
+  local app = win and win:application()
+  scheduleClearAINotificationForBundle(app and app:bundleID())
 end)
 
 hs.window.filter.default:subscribe(hs.window.filter.windowCreated, inheritWorkspaceForCreatedWindow)
@@ -347,6 +441,36 @@ if hs.fs.attributes(aiHotkeys, "mode") == "file" then
   dofile(aiHotkeys)
 end
 
+local appReveal = os.getenv("HOME") .. "/.hammerspoon/app_reveal.lua"
+if hs.fs.attributes(appReveal, "mode") == "file" then
+  dofile(appReveal)
+end
+
+local airForceQuit = os.getenv("HOME") .. "/.hammerspoon/air_force_quit.lua"
+if hs.fs.attributes(airForceQuit, "mode") == "file" then
+  dofile(airForceQuit)
+end
+
 scheduleRememberFocusedWindow(0.05)
+if _G.wowAINotificationRefreshTimer then
+  _G.wowAINotificationRefreshTimer:stop()
+end
+_G.wowAINotificationRefreshTimer = hs.timer.doEvery(5, function()
+  scheduleClearAINotificationForFrontmostApp()
+  refreshAINotifications()
+end)
+hs.timer.doAfter(1, function()
+  scheduleClearAINotificationForFrontmostApp()
+  refreshAINotifications()
+end)
+if _G.wowAIApplicationWatcher then
+  _G.wowAIApplicationWatcher:stop()
+end
+_G.wowAIApplicationWatcher = hs.application.watcher.new(function(appName, eventType, app)
+  if eventType == hs.application.watcher.activated then
+    scheduleClearAINotificationForBundle(app and app:bundleID())
+  end
+end)
+_G.wowAIApplicationWatcher:start()
 log("workspace inherit watcher started")
 hs.autoLaunch(true)
