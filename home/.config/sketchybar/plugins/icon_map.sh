@@ -33,6 +33,9 @@ function __icon_map() {
    "Airmail")
         icon_result=":airmail:"
         ;;
+   "Air" | "JetBrains Air")
+        icon_result=":jetbrains_toolbox:"
+        ;;
    "AirPort Utility")
         icon_result=":airport_utility:"
         ;;
@@ -245,6 +248,9 @@ function __icon_map() {
         ;;
    "Figma")
         icon_result=":figma:"
+        ;;
+   "Fleet" | "JetBrains Fleet")
+        icon_result=":jetbrains_toolbox:"
         ;;
    "Final Cut Pro")
         icon_result=":final_cut_pro:"
@@ -822,6 +828,9 @@ function __icon_map() {
     "Weather" | "Wetter")
          icon_result=":weather:"
          ;;
+    "WezTerm")
+         icon_result=":wezterm:"
+         ;;
     "WebStorm")
          icon_result=":web_storm:"
          ;;
@@ -835,7 +844,7 @@ function __icon_map() {
          icon_result=":wecom:"
          ;;
     "Kaku")
-         icon_result=":terminal:"
+         icon_result=":wezterm:"
          ;;
     "Whimsical")
          icon_result=":trello:"
