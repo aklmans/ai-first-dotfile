@@ -74,7 +74,7 @@ install_apps() {
 
 install_quicklook() {
   # Optional QuickLook extras for local Finder previews.
-  brew install --cask qlcolorcode qlmarkdown qlstephen quicklook-json quicklook-video quicklookase syntax-highlight webpquicklook
+  brew install --cask qlmarkdown quicklook-video syntax-highlight
   if [[ -d "$HOME/Library/QuickLook" ]]; then
     if xattr -r -p com.apple.quarantine "$HOME/Library/QuickLook" >/dev/null 2>&1; then
       xattr -r -d com.apple.quarantine "$HOME/Library/QuickLook"
