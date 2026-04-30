@@ -17,7 +17,20 @@ It is used for trackpad/trackpoint gestures that complement AeroSpace workspace 
 ./bootstrap/install/bettertouchtool.sh
 ```
 
-The installer copies the tracked gesture preset script and starts BetterTouchTool.
+The installer copies the tracked gesture preset script but does not start BetterTouchTool by default.
+This keeps the base setup stable on multi-display systems where BTT can occasionally hold stale mouse/drag state after display changes.
+
+To start BetterTouchTool and apply the gesture preset explicitly:
+
+```bash
+./bootstrap/install/bettertouchtool.sh --deploy-only --start
+```
+
+To stop BetterTouchTool during troubleshooting:
+
+```bash
+osascript -e 'tell application "BetterTouchTool" to quit'
+```
 
 ## Gesture behavior
 
@@ -42,3 +55,6 @@ If gestures do not trigger:
 1. Restart BetterTouchTool.
 2. Check macOS permissions.
 3. Reload the preset script and reapply.
+
+If mouse selection or dragging stops working, quit BetterTouchTool first.
+The tracked Hammerspoon config does not listen to mouse down/drag/up events, so BTT is the higher-risk event layer for that symptom.
