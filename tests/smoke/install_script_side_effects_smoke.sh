@@ -6,3 +6,26 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 ! rg -n '(>>|tee\s+-a).*(\.zshenv|\.zprofile|\.zshrc)|printf .*>>.*(\.zshenv|\.zprofile|\.zshrc)' \
   "$repo_root/bootstrap"
 
+tmp_dir="$(mktemp -d)"
+trap 'rm -rf "$tmp_dir"' EXIT
+
+source "$repo_root/bootstrap/lib/common.sh"
+
+mkdir -p "$tmp_dir/repo/source"
+printf 'one\n' >"$tmp_dir/repo/source/file.txt"
+
+deploy_repo_path "$tmp_dir/repo" "source" "$tmp_dir/target" "smoke" >/dev/null
+deploy_repo_path "$tmp_dir/repo" "source" "$tmp_dir/target" "smoke" >/dev/null
+
+if compgen -G "$tmp_dir/target.backup_*" >/dev/null; then
+  printf 'deploy_repo_path created a backup for unchanged content\n' >&2
+  exit 1
+fi
+
+printf 'local change\n' >"$tmp_dir/target/file.txt"
+deploy_repo_path "$tmp_dir/repo" "source" "$tmp_dir/target" "smoke" >/dev/null
+
+if ! compgen -G "$tmp_dir/target.backup_*" >/dev/null; then
+  printf 'deploy_repo_path did not backup changed content\n' >&2
+  exit 1
+fi

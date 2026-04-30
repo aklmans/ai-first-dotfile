@@ -78,17 +78,46 @@ Designed for developers who want fast keyboard workflows, predictable multi-disp
 
 ## Installation
 
-Run the steps below **in order** on a fresh machine. All commands are run from the repo root.
-
-### 1. Core bootstrap
+Run the setup entrypoint from the repo root:
 
 ```bash
 cd /path/to/ai-first-dotfile
+./bootstrap/setup.sh all
+```
+
+Useful variants:
+
+```bash
+./bootstrap/setup.sh deploy          # deploy tracked config only
+./bootstrap/setup.sh all --no-brew   # skip Homebrew, keep non-brew setup steps
+./bootstrap/setup.sh desktop         # desktop/window-management layer only
+./bootstrap/setup.sh shell           # shell, terminal, and file-manager layer only
+./bootstrap/setup.sh ai              # AI Workflow Router only
+./bootstrap/setup.sh all --dry-run   # preview commands
+```
+
+The setup script keeps config deployment copy-based, not symlink-based. Re-running it is intended to be safe: unchanged targets are skipped and backups are created only when a target differs.
+
+### Manual module install
+
+Each module script also supports:
+
+```bash
+--deploy-only    # deploy config, skip Homebrew
+--install-only   # install packages/external dependencies, skip config deploy
+--no-brew        # skip Homebrew but keep non-brew setup steps
+```
+
+Manual order, if you do not want to use `setup.sh`:
+
+#### 1. Core bootstrap
+
+```bash
 ./bootstrap/brew.sh base desktop fonts
 ./bootstrap/app-store.sh
 ```
 
-### 2. Shell and terminal
+#### 2. Shell and terminal
 
 ```bash
 ./bootstrap/install/zsh.sh
@@ -99,7 +128,7 @@ cd /path/to/ai-first-dotfile
 ./bootstrap/install/ideavim.sh    # optional
 ```
 
-### 3. Desktop and workspace
+#### 3. Desktop and workspace
 
 ```bash
 ./bootstrap/install/karabiner.sh
@@ -110,20 +139,20 @@ cd /path/to/ai-first-dotfile
 ./bootstrap/install/hammerspoon.sh
 ```
 
-### 4. AI workflow
+#### 4. AI workflow
 
 ```bash
 ./bootstrap/install/ai-router.sh
 ```
 
-### 5. Media and optional assistants
+#### 5. Media and optional assistants
 
 ```bash
 ./bootstrap/install/mpv.sh        # optional
 ./bootstrap/install/gbrain.sh     # optional (local-only template-based setup)
 ```
 
-### 6. Validate
+#### 6. Validate
 
 ```bash
 bash tests/smoke/repository_structure_smoke.sh

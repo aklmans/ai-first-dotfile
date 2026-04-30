@@ -10,7 +10,7 @@ This document summarizes the current public architecture of this repository.
 - `home/.config/ai-router/` -> prompts/snippets/providers
 - `home/.zshenv`, `home/.config/zsh/` -> shell bootstrap
 - `home/.config/sketchybar/`, `home/.config/borders/` -> desktop UI
-- `home/.config/kaku/`, `home/.config/warp/`, `home/.config/yazi/` -> terminal stack
+- `home/.config/kaku/`, `home/.warp/`, `home/.config/yazi/` -> terminal stack
 - `home/.config/mpv/` -> player behavior
 
 `bootstrap/install/*.sh` owns deployment for each module.

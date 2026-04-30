@@ -17,6 +17,8 @@ Its configuration is fully tracked and reproducible; runtime state is local.
 ./bootstrap/install/yazi.sh
 ```
 
+The installer supports current Yazi package management (`ya pkg add`) and falls back to legacy `ya pack -a` for older Yazi builds.
+
 ## What is configured
 
 - Vim-like key bindings in `keymap.toml`.

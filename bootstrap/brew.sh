@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$script_dir/lib/common.sh"
+
 # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 usage() {
@@ -39,8 +42,8 @@ install_infra() {
 
 install_desktop() {
   # Desktop status bar, borders, and audio helpers.
-  brew tap felixkratz/formulae
-  brew tap nikitabobko/tap
+  ensure_brew_tap felixkratz/formulae
+  ensure_brew_tap nikitabobko/tap
   brew install felixkratz/formulae/borders felixkratz/formulae/sketchybar nowplaying-cli switchaudio-osx
   brew install --cask nikitabobko/tap/aerospace hammerspoon bettertouchtool
 }
@@ -52,9 +55,9 @@ install_fonts() {
 
 install_apps() {
   # Explicit tap dependency for the locally managed cc-switch cask.
-  brew tap farion1231/ccswitch
-  brew tap steipete/tap
-  brew tap tw93/tap
+  ensure_brew_tap farion1231/ccswitch
+  ensure_brew_tap steipete/tap
+  ensure_brew_tap tw93/tap
 
   # Optional terminal, utility, and desktop apps currently installed on this machine.
   brew install tw93/tap/kakuku

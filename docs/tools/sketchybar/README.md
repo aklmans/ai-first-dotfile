@@ -19,6 +19,7 @@
 - AI attention indicators for selected tools and IDEs.
 - `Option + Shift + Space` hides/shows SketchyBar through AeroSpace and also updates the AeroSpace top gap so windows reclaim or release the bar area.
 - Optional font fetch for the bar icon font and symbols.
+- SbarLua is installed from a pinned upstream commit by `bootstrap/install/sketchybar.sh`; override `SBARLUA_REF` only when intentionally upgrading.
 
 ## Install and refresh
 

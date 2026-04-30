@@ -5,6 +5,28 @@ This page is the shortest practical path to bootstrap it on a clean machine.
 
 ## Installation flow
 
+The recommended path is the setup entrypoint:
+
+```bash
+cd /path/to/ai-first-dotfile
+./bootstrap/setup.sh all
+```
+
+For config-only updates on a machine that already has packages installed:
+
+```bash
+./bootstrap/setup.sh deploy
+```
+
+Other common profiles:
+
+```bash
+./bootstrap/setup.sh shell
+./bootstrap/setup.sh desktop
+./bootstrap/setup.sh ai
+./bootstrap/setup.sh all --dry-run
+```
+
 The repository is split into bootstrap layers:
 
 1. **Core packages**
@@ -13,7 +35,7 @@ The repository is split into bootstrap layers:
 4. **AI workflow**
 5. **Optional tools**
 
-> All commands below are intended to run from the repository root.
+> All manual commands below are intended to run from the repository root.
 
 ### 1) Core bootstrap
 

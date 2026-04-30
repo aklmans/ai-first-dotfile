@@ -38,7 +38,6 @@ require_dir docs/tools/current-workflow
 require_dir home/.config
 require_dir home/.config/ai-router
 require_dir home/.config/kaku
-require_dir home/.config/warp
 require_dir home/.config/yazi
 require_dir home/.config/zsh
 require_dir home/.config/zsh/completions
@@ -47,6 +46,7 @@ require_dir home/.config/borders
 require_dir home/.config/aerospace
 require_dir home/.config/karabiner
 require_dir home/.config/mpv
+require_dir home/.warp
 require_dir bootstrap/install
 require_dir bootstrap/macos
 require_dir manifests/app-store
@@ -71,7 +71,7 @@ require_file home/.config/ai-router/config.json
 
 require_file home/.config/kaku/kaku.lua
 require_file home/.config/kaku/assistant.toml
-require_file home/.config/warp/keybindings.yaml
+require_file home/.warp/keybindings.yaml
 require_file home/.config/yazi/init.lua
 require_file home/.config/yazi/yazi.toml
 require_file home/.config/ai-router/providers/app-opener.sh
@@ -99,6 +99,7 @@ require_file home/.hammerspoon/app_reveal.lua
 require_file home/.config/mpv/mpv.conf
 require_file home/.config/mpv/input.conf
 require_file bootstrap/brew.sh
+require_file bootstrap/setup.sh
 require_file bootstrap/app-store.sh
 
 require_file bootstrap/install/ai-router.sh
@@ -130,6 +131,7 @@ require_absent home/.config/skhd
 require_absent home/.config/yabai
 require_absent home/.config/wezterm
 require_absent home/.config/oh-my-posh
+require_absent home/.config/warp
 require_absent home/.config/skhd.sh
 require_absent bootstrap/install/skhd.sh
 require_absent bootstrap/install/yabai.sh

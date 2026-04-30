@@ -11,7 +11,7 @@ This module covers the shell-first terminal stack:
 - `home/.config/starship.toml`
 - `home/.config/kaku/kaku.lua`
 - `home/.config/kaku/assistant.toml`
-- `home/.config/warp/keybindings.yaml`
+- `home/.warp/keybindings.yaml`
 - `home/.config/yazi/`
 - `bootstrap/install/zsh.sh`
 - `bootstrap/install/starship.sh`
@@ -40,7 +40,7 @@ This module covers the shell-first terminal stack:
 
 ## Warp
 
-`home/.config/warp/keybindings.yaml` is the shared keybinding config.
+`home/.warp/keybindings.yaml` is the shared keybinding config.
 `bootstrap/install/warp.sh` installs Warp and the Nerd Font used by this setup.
 
 ## Yazi
