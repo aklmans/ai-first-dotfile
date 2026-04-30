@@ -8,9 +8,35 @@ ICON_MAP="$CONFIG_DIR/plugins/icon_map.sh"
 
 source "$CONFIG_DIR/colors.sh"
 
+run_aerospace() {
+  local timeout="${AEROSPACE_QUERY_TIMEOUT_SECONDS:-2}"
+  local output_file pid watcher status
+  output_file="$(mktemp "${TMPDIR:-/tmp}/sketchybar-aerospace.XXXXXX")"
+
+  "$AEROSPACE" "$@" >"$output_file" 2>/dev/null &
+  pid=$!
+
+  (
+    sleep "$timeout"
+    kill -0 "$pid" 2>/dev/null && kill "$pid" 2>/dev/null
+  ) &
+  watcher=$!
+
+  status=0
+  wait "$pid" || status=$?
+  kill "$watcher" 2>/dev/null || true
+  wait "$watcher" 2>/dev/null || true
+
+  if [ "$status" -eq 0 ]; then
+    cat "$output_file"
+  fi
+  rm -f "$output_file"
+  return "$status"
+}
+
 WORKSPACES="1 2 3 4 5 6 7 8 9 10 11 12"
-WINDOWS="$("$AEROSPACE" list-windows --all --format "%{workspace}%{tab}%{app-name}" 2>/dev/null || true)"
-focused_workspace="$("$AEROSPACE" list-workspaces --focused 2>/dev/null | head -n 1 || true)"
+WINDOWS="$(run_aerospace list-windows --all --format "%{workspace}%{tab}%{app-name}" || true)"
+focused_workspace="$(run_aerospace list-workspaces --focused | head -n 1 || true)"
 
 args=(--animate sin 10)
 

@@ -1,12 +1,39 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 AEROSPACE="${AEROSPACE:-/opt/homebrew/bin/aerospace}"
+
+run_aerospace() {
+  local timeout="${AEROSPACE_QUERY_TIMEOUT_SECONDS:-2}"
+  local output_file pid watcher status
+  output_file="$(mktemp "${TMPDIR:-/tmp}/sketchybar-aerospace.XXXXXX")"
+
+  "$AEROSPACE" "$@" >"$output_file" 2>/dev/null &
+  pid=$!
+
+  (
+    sleep "$timeout"
+    kill -0 "$pid" 2>/dev/null && kill "$pid" 2>/dev/null
+  ) &
+  watcher=$!
+
+  status=0
+  wait "$pid" || status=$?
+  kill "$watcher" 2>/dev/null || true
+  wait "$watcher" 2>/dev/null || true
+
+  if [ "$status" -eq 0 ]; then
+    cat "$output_file"
+  fi
+  rm -f "$output_file"
+  return "$status"
+}
 
 window_state() {
   source "$CONFIG_DIR/colors.sh"
   source "$CONFIG_DIR/icons.sh"
 
-  WINDOW="$("$AEROSPACE" list-windows --focused --format "%{window-layout}%{tab}%{window-parent-container-layout}%{tab}%{workspace-root-container-layout}%{tab}%{window-is-fullscreen}" 2>/dev/null || true)"
+  WINDOW="$(run_aerospace list-windows --focused --format "%{window-layout}%{tab}%{window-parent-container-layout}%{tab}%{workspace-root-container-layout}%{tab}%{window-is-fullscreen}" || true)"
 
   COLOR=$BAR_BORDER_COLOR
   ICON=""
@@ -40,11 +67,11 @@ window_state() {
 }
 
 mouse_clicked() {
-  "$AEROSPACE" layout floating tiling 2>/dev/null || true
+  run_aerospace layout floating tiling >/dev/null || true
   window_state
 }
 
-case "$SENDER" in
+case "${SENDER:-}" in
   "mouse.clicked") mouse_clicked ;;
   *) window_state ;;
 esac
