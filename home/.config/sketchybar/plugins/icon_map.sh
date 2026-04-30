@@ -34,7 +34,7 @@ function __icon_map() {
         icon_result=":airmail:"
         ;;
    "Air" | "JetBrains Air")
-        icon_result=":jetbrains_toolbox:"
+        icon_result=":activitywatch:"
         ;;
    "AirPort Utility")
         icon_result=":airport_utility:"
