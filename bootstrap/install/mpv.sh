@@ -16,7 +16,6 @@ install_osc_font() {
     return 0
   fi
 
-  ensure_brew_tap homebrew/cask-fonts
   if brew list --cask --versions font-material-design-icons-webfont >/dev/null 2>&1; then
     return 0
   fi

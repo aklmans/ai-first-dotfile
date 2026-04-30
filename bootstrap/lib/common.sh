@@ -79,9 +79,77 @@ brew_install() {
   brew install "$@"
 }
 
+cask_app_paths() {
+  local cask="$1"
+  local token="${cask##*/}"
+  local info
+
+  info="$(brew info --cask "$cask" 2>/dev/null || true)"
+  printf '%s\n' "$info" | awk '
+    /^==> Artifacts/ { in_artifacts = 1; next }
+    /^==>/ { in_artifacts = 0 }
+    in_artifacts && /\.app \(App\)/ {
+      sub(/^[[:space:]]*/, "")
+      sub(/ \(App\).*/, "")
+      print
+    }
+  '
+
+  case "$token" in
+    aerospace)
+      printf '%s\n' "AeroSpace.app"
+      ;;
+    bettertouchtool)
+      printf '%s\n' "BetterTouchTool.app"
+      ;;
+    hammerspoon)
+      printf '%s\n' "Hammerspoon.app"
+      ;;
+    karabiner-elements)
+      printf '%s\n' "Karabiner-Elements.app"
+      ;;
+    mpv)
+      printf '%s\n' "mpv.app"
+      ;;
+    warp)
+      printf '%s\n' "Warp.app"
+      ;;
+  esac
+}
+
+cask_app_exists() {
+  local cask="$1"
+  local app
+
+  while IFS= read -r app; do
+    [[ -n "$app" ]] || continue
+    if [[ -d "/Applications/$app" || -d "$HOME/Applications/$app" || -d "/Applications/Utilities/$app" ]]; then
+      return 0
+    fi
+  done < <(cask_app_paths "$cask" | sort -u)
+
+  return 1
+}
+
 brew_install_cask() {
   should_brew || return 0
-  brew install --cask "$@"
+
+  local cask token
+  for cask in "$@"; do
+    token="${cask##*/}"
+
+    if brew list --cask --versions "$cask" >/dev/null 2>&1 || brew list --cask --versions "$token" >/dev/null 2>&1; then
+      printf 'Cask already managed by Homebrew: %s\n' "$cask"
+      continue
+    fi
+
+    if cask_app_exists "$cask"; then
+      printf 'Cask app already exists outside Homebrew; skipping install: %s\n' "$cask"
+      continue
+    fi
+
+    brew install --cask "$cask"
+  done
 }
 
 require_repo_path() {

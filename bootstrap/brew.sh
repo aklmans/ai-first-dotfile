@@ -22,11 +22,13 @@ EOF
 }
 
 install_base() {
+  ensure_brew_tap nao1215/tap
+
   # Base utilities required by the rest of the setup.
   brew install mas coreutils gnu-sed
 
   # Everyday CLI tools and shell-facing utilities.
-  brew install ast-grep bat bottom chafa fd fzf gdu gh git-delta gup jq lazydocker lazygit neovim starship ripgrep tree trash yazi zoxide
+  brew install ast-grep bat bottom chafa fd fzf gdu gh git-delta nao1215/tap/gup jq lazydocker lazygit neovim starship ripgrep tree trash yazi zoxide
 
   # Writing, media, and OCR helpers used by tracked workflows.
   brew install hugo pandoc ffmpeg imagemagick summarize tesseract tesseract-lang

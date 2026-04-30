@@ -6,6 +6,11 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 ! rg -n '(>>|tee\s+-a).*(\.zshenv|\.zprofile|\.zshrc)|printf .*>>.*(\.zshenv|\.zprofile|\.zshrc)' \
   "$repo_root/bootstrap"
 
+! rg -n 'homebrew/cask-fonts' "$repo_root/bootstrap"
+! rg -n 'brew install .*([^/:[:alnum:]_-]|^)gup([^/[:alnum:]_-]|$)' "$repo_root/bootstrap/brew.sh"
+rg -n 'ensure_brew_tap nao1215/tap' "$repo_root/bootstrap/brew.sh" >/dev/null
+rg -n 'nao1215/tap/gup' "$repo_root/bootstrap/brew.sh" >/dev/null
+
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "$tmp_dir"' EXIT
 
