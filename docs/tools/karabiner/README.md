@@ -45,6 +45,7 @@ After install, open Karabiner-Elements and confirm profile:
   - direct actions for Warp / coding tools / browser / Codex / Claude / etc.
 
 See `home/.config/karabiner/CapsLock-AI-Lite.md` for the full mapping intent and fallback behavior.
+For the complete public shortcut table, see [Shortcut Reference](../../shortcuts.md).
 
 ## Why this profile is safe
 
@@ -63,4 +64,4 @@ Also verify selected profile and bindings in the Karabiner GUI after install.
 ## Notes
 
 - We intentionally do not track large private complex-modifications bundles.
-- `home/.config/karabiner/karabiner.json.backup-*` is only used locally and is excluded from migration.
+- `home/.config/karabiner/karabiner.json.backup-*` is only used locally and is excluded from version control.

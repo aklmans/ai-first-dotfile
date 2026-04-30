@@ -21,8 +21,12 @@ The installer copies the tracked gesture preset script and starts BetterTouchToo
 
 ## Gesture behavior
 
-- Workspace/tiling gestures are mapped to AeroSpace-related control flows.
+- 3/4-finger left and right gestures move to previous/next AeroSpace workspace groups.
+- 3/4-finger up opens Mission Control.
+- 3/4-finger down opens App Expose.
 - The tracked configuration intentionally does not include private device IDs or account tokens.
+
+Full shortcut map: [Shortcut Reference](../../shortcuts.md).
 
 ## What is not tracked
 

@@ -3,10 +3,10 @@
 This repository is designed to be public-safe.
 Only public configuration and minimal bootstrap helpers are tracked.
 
-## Migration policy
+## Public safety policy
 
-This project does **not** migrate old Git history.
-Only current files were imported into a new clean history.
+This project does **not** import private Git history.
+Only current, reviewed, public-safe files are tracked.
 
 That means:
 

@@ -210,6 +210,8 @@ Grant the following permissions when prompted (System Settings → Privacy & Sec
 | 3/4-finger up | Mission Control |
 | 3/4-finger down | App Exposé |
 
+Full shortcut reference: [docs/shortcuts.md](docs/shortcuts.md)
+
 ---
 
 ## Docs
@@ -218,6 +220,7 @@ Grant the following permissions when prompted (System Settings → Privacy & Sec
 - [Getting started](docs/getting-started.md)
 - [Troubleshooting](docs/troubleshooting.md)
 - [Privacy policy](docs/privacy.md)
+- [Shortcut reference](docs/shortcuts.md)
 - [Screenshots](docs/screenshots.md)
 - [Workflow overview](docs/tools/current-workflow/README.md)
 
@@ -234,16 +237,12 @@ Grant the following permissions when prompted (System Settings → Privacy & Sec
 - [IdeaVim](docs/tools/ideavim/README.md)
 - [mpv](docs/tools/mpv/README.md)
 
-**History**
-- [Migration plan](MIGRATION_PLAN.md)
-- [Migration report](MIGRATION_REPORT.md)
-
 ---
 
 ## Notes for public use
 
 - This is a clean public snapshot rebuilt from a private configuration history.
-- Private runtime artifacts, history, and secrets are excluded via `.gitignore` and migration policy.
+- Private runtime artifacts, history, and secrets are excluded via `.gitignore` and the public safety policy.
 - AI provider credentials are template-only placeholders — no real keys are tracked:
   - `templates/gbrain/.env.local.example`
   - `templates/gbrain/codex-config.example.toml`

@@ -41,12 +41,16 @@ Do not assume behavior from these modules in this repository.
 - `Ctrl + Left/Right` cycle workspace groups
 - `Ctrl + Up` / `Ctrl + Down` are reserved for Mission Control / App Expose style system workflows, depending on your active keyboard layer.
 
+Full shortcut map: [Shortcut Reference](../../shortcuts.md).
+
 ## AI hotkeys summary
 
 - `CapsLock + A/S/T/E/W/F/X/R/G/D/Y/=` render prompt types in the AI Router flow
 - `CapsLock + C` opens the agent chooser
 - `CapsLock + Ctrl + W/I/G/X/H/C/L` are direct app/agent launch chords in this setup
 - `CapsLock + Space` triggers AI workflow palette
+
+For navigation, editing, direct launch, screenshot, and trackpad gesture details, see [Shortcut Reference](../../shortcuts.md).
 
 ## AI Router + Hammerspoon + Karabiner
 

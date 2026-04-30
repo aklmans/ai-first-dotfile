@@ -119,7 +119,7 @@ require_file manifests/app-store/mas-default.txt
 require_file manifests/app-store/mas-large.txt
 require_file LICENSE
 require_file README.md
-require_file MIGRATION_PLAN.md
+require_file docs/shortcuts.md
 
 require_file tests/smoke/ai_router_exports_smoke.sh
 require_file tests/smoke/repository_structure_smoke.sh

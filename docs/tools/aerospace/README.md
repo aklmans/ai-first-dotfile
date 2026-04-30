@@ -31,6 +31,8 @@ These are the workspace-level shortcuts documented in this repo:
 - `Alt + H/J/K/L` -> move focus inside the active layout
 - `Option + Shift + Space` -> hide/show SketchyBar and compact/restore the AeroSpace top gap
 
+Full shortcut map: [Shortcut Reference](../../shortcuts.md).
+
 ## Useful commands
 
 ```bash

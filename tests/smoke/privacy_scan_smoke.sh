@@ -15,8 +15,6 @@ scan_targets=(
   "$repo_root/docs"
   "$repo_root/tests"
   "$repo_root/README.md"
-  "$repo_root/MIGRATION_PLAN.md"
-  "$repo_root/MIGRATION_REPORT.md"
   "$repo_root/LICENSE"
 )
 
@@ -71,7 +69,7 @@ if [ -s "$abs_path_matches_file" ]; then
   exit 1
 fi
 
-# block runtime and obsolete folders from migration
+# block runtime and obsolete folders from tracked sources
 assert_path_absent "home/.config/skhd"
 assert_path_absent "home/.config/yabai"
 assert_path_absent "home/.config/wezterm"
