@@ -35,9 +35,20 @@ local aiAttentionAppByBundle = {
   ["com.jetbrains.intellij"] = "idea",
   ["com.jetbrains.goland"] = "goland",
 }
+local terminalMasterStackAppByBundle = {
+  ["dev.warp.Warp-Stable"] = true,
+  ["fun.tw93.kaku"] = true,
+}
+local terminalMasterStackTimers = {}
+local terminalMasterStackRunning = {}
+local terminalMasterStackQueued = {}
 
 local function isJetBrainsBundle(bundleID)
   return bundleID == "com.google.android.studio" or (bundleID and bundleID:match("^com%.jetbrains%.") ~= nil)
+end
+
+local function isTerminalMasterStackBundle(bundleID)
+  return terminalMasterStackAppByBundle[bundleID] == true
 end
 
 local function isLikelyJetBrainsSecondaryTitle(title)
@@ -212,6 +223,25 @@ local function parseWindowList(output)
   return windows
 end
 
+local function parseWindowListWithLayout(output)
+  local windows = {}
+
+  for line in (output or ""):gmatch("[^\r\n]+") do
+    local id, workspace, bundleID, layout, title = line:match("^([^\t]*)\t([^\t]*)\t([^\t]*)\t([^\t]*)\t(.*)$")
+    if id and workspace and bundleID and layout then
+      windows[#windows + 1] = {
+        id = id,
+        workspace = workspace,
+        bundleID = bundleID,
+        layout = layout,
+        title = title or "",
+      }
+    end
+  end
+
+  return windows
+end
+
 local function listAeroWindowsAsync(callback)
   runAerospace({
     "list-windows",
@@ -226,6 +256,60 @@ local function listAeroWindowsAsync(callback)
 
     callback(parseWindowList(output))
   end)
+end
+
+local function listAeroWindowsWithLayoutAsync(callback)
+  runAerospace({
+    "list-windows",
+    "--all",
+    "--format",
+    "%{window-id}%{tab}%{workspace}%{tab}%{app-bundle-id}%{tab}%{window-layout}%{tab}%{window-title}",
+  }, function(output)
+    if not output then
+      callback(nil)
+      return
+    end
+
+    callback(parseWindowListWithLayout(output))
+  end)
+end
+
+local function focusedWorkspaceAsync(callback)
+  runAerospace({
+    "list-workspaces",
+    "--focused",
+  }, function(output)
+    callback((output or ""):match("([^\r\n]+)"))
+  end)
+end
+
+local function runAerospaceSequence(commands, callback)
+  local index = 1
+
+  local function nextCommand()
+    local command = commands[index]
+    if not command then
+      if callback then
+        callback(true)
+      end
+      return
+    end
+
+    runAerospace(command, function(_, exitCode)
+      if exitCode ~= 0 then
+        log("aerospace sequence failed at " .. table.concat(command, " "))
+        if callback then
+          callback(false)
+        end
+        return
+      end
+
+      index = index + 1
+      nextCommand()
+    end)
+  end
+
+  nextCommand()
 end
 
 local function findAeroWindowAsync(win, bundleID, title, callback)
@@ -421,6 +505,167 @@ local function scheduleWorkspaceSettle(delay)
   end)
 end
 
+local function visibleWindowFrameByID()
+  local frames = {}
+
+  for _, win in ipairs(hs.window.allWindows()) do
+    frames[tostring(win:id())] = win:frame()
+  end
+
+  return frames
+end
+
+local function sortWindowsByFrame(windows)
+  local frames = visibleWindowFrameByID()
+
+  table.sort(windows, function(left, right)
+    local leftFrame = frames[left.id]
+    local rightFrame = frames[right.id]
+    if leftFrame and rightFrame then
+      if math.abs(leftFrame.x - rightFrame.x) > 4 then
+        return leftFrame.x < rightFrame.x
+      end
+
+      if math.abs(leftFrame.y - rightFrame.y) > 4 then
+        return leftFrame.y < rightFrame.y
+      end
+    end
+
+    return tonumber(left.id) < tonumber(right.id)
+  end)
+end
+
+local function terminalTilingWindowsForWorkspace(windows, workspace)
+  local tilingWindows = {}
+
+  for _, item in ipairs(windows or {}) do
+    if item.workspace == workspace and item.layout ~= "floating" then
+      if not isTerminalMasterStackBundle(item.bundleID) then
+        log("skip terminal master-stack workspace=" .. workspace .. " because of non-terminal window bundle=" .. tostring(item.bundleID))
+        return nil
+      end
+      tilingWindows[#tilingWindows + 1] = item
+    end
+  end
+
+  return tilingWindows
+end
+
+local arrangeTerminalMasterStack
+
+local function finishTerminalMasterStack(workspace)
+  terminalMasterStackRunning[workspace] = nil
+  refreshSketchyBar()
+  if terminalMasterStackQueued[workspace] then
+    terminalMasterStackQueued[workspace] = nil
+    arrangeTerminalMasterStack(workspace)
+  end
+end
+
+arrangeTerminalMasterStack = function(workspace)
+  if terminalMasterStackRunning[workspace] then
+    terminalMasterStackQueued[workspace] = true
+    return
+  end
+
+  terminalMasterStackRunning[workspace] = true
+  focusedWorkspaceAsync(function(focusedWorkspace)
+    if focusedWorkspace ~= workspace then
+      terminalMasterStackRunning[workspace] = nil
+      return
+    end
+
+    listAeroWindowsWithLayoutAsync(function(windows)
+      local initialWindows = terminalTilingWindowsForWorkspace(windows, workspace)
+      if not initialWindows or #initialWindows < 2 then
+        terminalMasterStackRunning[workspace] = nil
+        return
+      end
+
+      runAerospace({ "flatten-workspace-tree" }, function(_, exitCode)
+        if exitCode ~= 0 then
+          terminalMasterStackRunning[workspace] = nil
+          return
+        end
+
+        hs.timer.doAfter(0.12, function()
+          listAeroWindowsWithLayoutAsync(function(flattenedWindows)
+            local tilingWindows = terminalTilingWindowsForWorkspace(flattenedWindows, workspace)
+            if not tilingWindows or #tilingWindows < 2 then
+              terminalMasterStackRunning[workspace] = nil
+              return
+            end
+
+            sortWindowsByFrame(tilingWindows)
+
+            local commands = {}
+            if #tilingWindows >= 3 then
+              commands[#commands + 1] = { "join-with", "--window-id", tilingWindows[2].id, "right" }
+              for index = 4, #tilingWindows do
+                commands[#commands + 1] = { "move", "--window-id", tilingWindows[index].id, "left" }
+              end
+            end
+            commands[#commands + 1] = { "balance-sizes" }
+
+            local orderedIDs = {}
+            for _, item in ipairs(tilingWindows) do
+              orderedIDs[#orderedIDs + 1] = item.id
+            end
+            log("terminal master-stack workspace=" .. workspace .. " windows=" .. tostring(#tilingWindows) .. " order=" .. table.concat(orderedIDs, ","))
+            runAerospaceSequence(commands, function()
+              finishTerminalMasterStack(workspace)
+            end)
+          end)
+        end)
+      end)
+    end)
+  end)
+end
+
+local function scheduleTerminalMasterStack(workspace, delay)
+  if not workspace or workspace == "" then
+    return
+  end
+
+  if terminalMasterStackTimers[workspace] then
+    terminalMasterStackTimers[workspace]:stop()
+  end
+
+  terminalMasterStackTimers[workspace] = hs.timer.doAfter(delay or 0.45, function()
+    terminalMasterStackTimers[workspace] = nil
+    arrangeTerminalMasterStack(workspace)
+  end)
+end
+
+local function scheduleTerminalMasterStackForFocusedTerminal(delay)
+  hs.timer.doAfter(delay or 0.45, function()
+    focusedAeroWindowAsync(function(focused)
+      if focused and isTerminalMasterStackBundle(focused.bundleID) then
+        scheduleTerminalMasterStack(focused.workspace, 0.05)
+      end
+    end)
+  end)
+end
+
+local function scheduleTerminalMasterStackForWindow(win, delay)
+  local app = win and win:application()
+  local bundleID = app and app:bundleID()
+  if isTerminalMasterStackBundle(bundleID) then
+    hs.timer.doAfter(delay or 0.65, function()
+      findAeroWindowAsync(win, bundleID, win:title() or "", function(item)
+        if not item then
+          scheduleTerminalMasterStackForFocusedTerminal(0.05)
+          return
+        end
+
+        runAerospace({ "focus", "--window-id", item.id }, function()
+          scheduleTerminalMasterStack(item.workspace, 0.05)
+        end)
+      end)
+    end)
+  end
+end
+
 local function moveCreatedWindow(win, bundleID, title, workspaceCandidates, key)
   if not win or not win:isStandard() then
     return
@@ -576,11 +821,15 @@ hs.window.filter.default:subscribe(hs.window.filter.windowFocused, function(win)
   scheduleClearAINotificationForBundle(app and app:bundleID())
 end)
 
-hs.window.filter.default:subscribe(hs.window.filter.windowCreated, inheritWorkspaceForCreatedWindow)
+hs.window.filter.default:subscribe(hs.window.filter.windowCreated, function(win)
+  inheritWorkspaceForCreatedWindow(win)
+  scheduleTerminalMasterStackForWindow(win, 0.65)
+end)
 
 hs.window.filter.default:subscribe(hs.window.filter.windowTitleChanged, repairJetBrainsSecondaryWindow)
 
 hs.window.filter.default:subscribe(hs.window.filter.windowDestroyed, function()
+  scheduleTerminalMasterStackForFocusedTerminal(0.35)
   scheduleWorkspaceSettle(0.08)
 end)
 
