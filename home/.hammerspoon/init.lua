@@ -604,6 +604,12 @@ arrangeTerminalMasterStack = function(workspace)
               for index = 4, #tilingWindows do
                 commands[#commands + 1] = { "move", "--window-id", tilingWindows[index].id, "left" }
               end
+              if #tilingWindows >= 4 then
+                commands[#commands + 1] = { "join-with", "--window-id", tilingWindows[3].id, "down" }
+                for index = 5, #tilingWindows do
+                  commands[#commands + 1] = { "move", "--window-id", tilingWindows[index].id, "up" }
+                end
+              end
             end
             commands[#commands + 1] = { "balance-sizes" }
 
