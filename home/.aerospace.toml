@@ -16,7 +16,7 @@ on-focus-changed = [
     'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh'
 ]
 
-enable-normalization-flatten-containers = true
+enable-normalization-flatten-containers = false
 enable-normalization-opposite-orientation-for-nested-containers = true
 
 accordion-padding = 30
@@ -208,8 +208,8 @@ persistent-workspaces = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'
     alt-equal = 'resize smart +50'
     alt-shift-e = 'balance-sizes'
     alt-shift-r = ['flatten-workspace-tree', 'layout vertical horizontal', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
-    alt-shift-y = ['layout horizontal', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
-    alt-shift-x = ['layout vertical', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    alt-shift-y = ['split horizontal', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
+    alt-shift-x = ['split vertical', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
     alt-shift-t = ['layout floating tiling', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
     alt-shift-v = ['layout tiles horizontal vertical', 'exec-and-forget /bin/bash $HOME/.config/sketchybar/plugins/aerospace_spaces.sh']
 

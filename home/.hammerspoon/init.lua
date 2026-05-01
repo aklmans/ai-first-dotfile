@@ -39,9 +39,8 @@ local terminalMasterStackAppByBundle = {
   ["dev.warp.Warp-Stable"] = true,
   ["fun.tw93.kaku"] = true,
 }
-local terminalMasterStackTimers = {}
-local terminalMasterStackRunning = {}
-local terminalMasterStackQueued = {}
+local terminalMasterStackMaxWindows = 4
+local terminalNewWindowPassthroughUntil = 0
 
 local function isJetBrainsBundle(bundleID)
   return bundleID == "com.google.android.studio" or (bundleID and bundleID:match("^com%.jetbrains%.") ~= nil)
@@ -551,126 +550,104 @@ local function terminalTilingWindowsForWorkspace(windows, workspace)
   return tilingWindows
 end
 
-local arrangeTerminalMasterStack
-
-local function finishTerminalMasterStack(workspace)
-  terminalMasterStackRunning[workspace] = nil
-  refreshSketchyBar()
-  if terminalMasterStackQueued[workspace] then
-    terminalMasterStackQueued[workspace] = nil
-    arrangeTerminalMasterStack(workspace)
-  end
+local function sendNativeTerminalNewWindow()
+  terminalNewWindowPassthroughUntil = hs.timer.secondsSinceEpoch() + 0.4
+  hs.eventtap.keyStroke({ "cmd" }, "n", 0)
 end
 
-arrangeTerminalMasterStack = function(workspace)
-  if terminalMasterStackRunning[workspace] then
-    terminalMasterStackQueued[workspace] = true
-    return
+local function rightmostBottomWindow(windows)
+  if not windows or #windows == 0 then
+    return nil
   end
 
-  terminalMasterStackRunning[workspace] = true
-  focusedWorkspaceAsync(function(focusedWorkspace)
-    if focusedWorkspace ~= workspace then
-      terminalMasterStackRunning[workspace] = nil
+  local frames = visibleWindowFrameByID()
+  local best = windows[1]
+  local bestFrame = frames[best.id]
+
+  for _, item in ipairs(windows) do
+    local frame = frames[item.id]
+    if frame then
+      if not bestFrame or frame.x > bestFrame.x + 4 or (math.abs(frame.x - bestFrame.x) <= 4 and frame.y > bestFrame.y) then
+        best = item
+        bestFrame = frame
+      end
+    elseif not bestFrame and tonumber(item.id) > tonumber(best.id) then
+      best = item
+    end
+  end
+
+  return best
+end
+
+local function prepareTerminalSplitForNewWindow(callback)
+  focusedAeroWindowAsync(function(focused)
+    if not focused or not isTerminalMasterStackBundle(focused.bundleID) then
+      callback()
       return
     end
 
     listAeroWindowsWithLayoutAsync(function(windows)
-      local initialWindows = terminalTilingWindowsForWorkspace(windows, workspace)
-      if not initialWindows or #initialWindows < 2 then
-        terminalMasterStackRunning[workspace] = nil
+      local tilingWindows = terminalTilingWindowsForWorkspace(windows, focused.workspace)
+      if not tilingWindows or #tilingWindows < 1 or #tilingWindows >= terminalMasterStackMaxWindows then
+        callback()
         return
       end
 
-      runAerospace({ "flatten-workspace-tree" }, function(_, exitCode)
-        if exitCode ~= 0 then
-          terminalMasterStackRunning[workspace] = nil
-          return
-        end
+      sortWindowsByFrame(tilingWindows)
 
-        hs.timer.doAfter(0.12, function()
-          listAeroWindowsWithLayoutAsync(function(flattenedWindows)
-            local tilingWindows = terminalTilingWindowsForWorkspace(flattenedWindows, workspace)
-            if not tilingWindows or #tilingWindows < 2 then
-              terminalMasterStackRunning[workspace] = nil
-              return
-            end
-
-            sortWindowsByFrame(tilingWindows)
-
-            local commands = {}
-            if #tilingWindows >= 3 then
-              commands[#commands + 1] = { "join-with", "--window-id", tilingWindows[2].id, "right" }
-              for index = 4, #tilingWindows do
-                commands[#commands + 1] = { "move", "--window-id", tilingWindows[index].id, "left" }
-              end
-              if #tilingWindows >= 4 then
-                commands[#commands + 1] = { "join-with", "--window-id", tilingWindows[3].id, "down" }
-                for index = 5, #tilingWindows do
-                  commands[#commands + 1] = { "move", "--window-id", tilingWindows[index].id, "up" }
-                end
-              end
-            end
-            commands[#commands + 1] = { "balance-sizes" }
-
-            local orderedIDs = {}
-            for _, item in ipairs(tilingWindows) do
-              orderedIDs[#orderedIDs + 1] = item.id
-            end
-            log("terminal master-stack workspace=" .. workspace .. " windows=" .. tostring(#tilingWindows) .. " order=" .. table.concat(orderedIDs, ","))
-            runAerospaceSequence(commands, function()
-              finishTerminalMasterStack(workspace)
-            end)
-          end)
-        end)
-      end)
-    end)
-  end)
-end
-
-local function scheduleTerminalMasterStack(workspace, delay)
-  if not workspace or workspace == "" then
-    return
-  end
-
-  if terminalMasterStackTimers[workspace] then
-    terminalMasterStackTimers[workspace]:stop()
-  end
-
-  terminalMasterStackTimers[workspace] = hs.timer.doAfter(delay or 0.45, function()
-    terminalMasterStackTimers[workspace] = nil
-    arrangeTerminalMasterStack(workspace)
-  end)
-end
-
-local function scheduleTerminalMasterStackForFocusedTerminal(delay)
-  hs.timer.doAfter(delay or 0.45, function()
-    focusedAeroWindowAsync(function(focused)
-      if focused and isTerminalMasterStackBundle(focused.bundleID) then
-        scheduleTerminalMasterStack(focused.workspace, 0.05)
+      local target = tilingWindows[1]
+      local splitDirection = "horizontal"
+      if #tilingWindows >= 2 then
+        target = rightmostBottomWindow(tilingWindows) or tilingWindows[#tilingWindows]
+        splitDirection = "vertical"
       end
+
+      log("terminal new-window split workspace=" .. focused.workspace .. " windows=" .. tostring(#tilingWindows) .. " target=" .. tostring(target.id) .. " direction=" .. splitDirection)
+      runAerospaceSequence({
+        { "focus", "--window-id", target.id },
+        { "split", splitDirection },
+      }, function()
+        callback()
+      end)
     end)
   end)
 end
 
-local function scheduleTerminalMasterStackForWindow(win, delay)
-  local app = win and win:application()
-  local bundleID = app and app:bundleID()
-  if isTerminalMasterStackBundle(bundleID) then
-    hs.timer.doAfter(delay or 0.65, function()
-      findAeroWindowAsync(win, bundleID, win:title() or "", function(item)
-        if not item then
-          scheduleTerminalMasterStackForFocusedTerminal(0.05)
-          return
-        end
-
-        runAerospace({ "focus", "--window-id", item.id }, function()
-          scheduleTerminalMasterStack(item.workspace, 0.05)
-        end)
-      end)
-    end)
+local function isPlainCommandN(event)
+  if event:getKeyCode() ~= hs.keycodes.map.n then
+    return false
   end
+
+  local flags = event:getFlags()
+  return flags.cmd and not flags.ctrl and not flags.alt and not flags.shift and not flags.fn
 end
+
+if _G.wowTerminalNewWindowEventTap then
+  _G.wowTerminalNewWindowEventTap:stop()
+end
+
+_G.wowTerminalNewWindowEventTap = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(event)
+  if hs.timer.secondsSinceEpoch() < terminalNewWindowPassthroughUntil then
+    return false
+  end
+
+  if not isPlainCommandN(event) then
+    return false
+  end
+
+  local app = hs.application.frontmostApplication()
+  if not isTerminalMasterStackBundle(app and app:bundleID()) then
+    return false
+  end
+
+  if event:getProperty(hs.eventtap.event.properties.keyboardEventAutorepeat) == 1 then
+    return true
+  end
+
+  prepareTerminalSplitForNewWindow(sendNativeTerminalNewWindow)
+  return true
+end)
+_G.wowTerminalNewWindowEventTap:start()
 
 local function moveCreatedWindow(win, bundleID, title, workspaceCandidates, key)
   if not win or not win:isStandard() then
@@ -829,13 +806,11 @@ end)
 
 hs.window.filter.default:subscribe(hs.window.filter.windowCreated, function(win)
   inheritWorkspaceForCreatedWindow(win)
-  scheduleTerminalMasterStackForWindow(win, 0.65)
 end)
 
 hs.window.filter.default:subscribe(hs.window.filter.windowTitleChanged, repairJetBrainsSecondaryWindow)
 
 hs.window.filter.default:subscribe(hs.window.filter.windowDestroyed, function()
-  scheduleTerminalMasterStackForFocusedTerminal(0.35)
   scheduleWorkspaceSettle(0.08)
 end)
 

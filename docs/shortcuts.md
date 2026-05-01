@@ -40,8 +40,8 @@ Workspace behavior is owned by `home/.aerospace.toml`.
 | `Alt + ,` | Toggle accordion layout orientation |
 | `Alt + Shift + T` | Toggle floating / tiling |
 | `Alt + Shift + V` | Use tiles layout |
-| `Alt + Shift + X` | Use vertical layout |
-| `Alt + Shift + Y` | Use horizontal layout |
+| `Alt + Shift + X` | Split vertically for the next tiled window |
+| `Alt + Shift + Y` | Split horizontally for the next tiled window |
 | `Alt + F` | Toggle AeroSpace fullscreen |
 | `Ctrl + Alt + F` | Toggle AeroSpace fullscreen |
 | `Alt + Shift + F` | Toggle native macOS fullscreen |
