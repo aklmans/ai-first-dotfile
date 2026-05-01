@@ -68,7 +68,7 @@ persistent-workspaces = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'
 # JetBrains: keep main IDE windows tiled, but float obvious dialogs/tool windows.
 [[on-window-detected]]
     if.app-name-regex-substring = '^(GoLand|IntelliJ IDEA|IntelliJ IDEA-EAP|WebStorm|PhpStorm|RustRover|PyCharm|CLion|DataGrip|Rider|Android Studio)$'
-    if.window-title-regex-substring = '^(Welcome to|Settings|Preferences|Project Structure|Run/Debug Configurations|Edit Configuration|Plugins|Tip of the Day|New Project|Open File or Project|Attach Directory|About|Licenses|Choose|Select|Import|Export|Find|Replace|Search Everywhere|Commit|Push|Pull|Merge|Rebase|Checkout|Branch|Clone Repository|Delete|Rename|Remove|Move|Copy|Add File to Git|Edit Commit Message|Confirm|Discard|Overwrite|File Already Exists|Resolve Conflicts)'
+    if.window-title-regex-substring = '^(Welcome to|Settings|Preferences|Project Structure|Run/Debug Configurations|Edit Configuration|Plugins|Tip of the Day|New Project|Open File or Project|Attach Directory|About|Licenses|Choose|Select|Import|Export|Find|Replace|Search Everywhere|Local History|Commit|Push|Pull|Merge|Rebase|Checkout|Branch|Clone Repository|Delete|Rename|Remove|Move|Copy|Add File to Git|Edit Commit Message|Confirm|Discard|Overwrite|File Already Exists|Resolve Conflicts)'
     run = 'layout floating'
 
 # Float apps that should behave like utility/dialog surfaces, then continue to placement rules.
