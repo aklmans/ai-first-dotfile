@@ -11,6 +11,10 @@ local sketchybarNotifications = os.getenv("HOME") .. "/.config/sketchybar/plugin
 local logPath = "/tmp/hammerspoon-workspace-inherit.log"
 local maxLogBytes = 256 * 1024
 local inheritWindowSeconds = 10
+local jetbrainsDefaultWorkspace = "7"
+local jetbrainsInheritWindowSeconds = 120
+local defaultInheritRetryDelays = { 0.15, 0.45, 0.9 }
+local jetbrainsInheritRetryDelays = { 0.15, 0.45, 0.9, 1.6, 2.8, 4.5 }
 local lastFocusedByBundle = {}
 local focusHistoryByBundle = {}
 local pendingTargetsByWindow = {}
@@ -31,6 +35,26 @@ local aiAttentionAppByBundle = {
   ["com.jetbrains.intellij"] = "idea",
   ["com.jetbrains.goland"] = "goland",
 }
+
+local function isJetBrainsBundle(bundleID)
+  return bundleID == "com.google.android.studio" or (bundleID and bundleID:match("^com%.jetbrains%.") ~= nil)
+end
+
+local function isLikelyJetBrainsSecondaryTitle(title)
+  if not title or title == "" then
+    return true
+  end
+
+  return title:match("^(Welcome to|Settings|Preferences|Project Structure|Run/Debug Configurations|Edit Configuration|Plugins|Tip of the Day|New Project|Open File or Project|Attach Directory|About|Licenses|Choose|Select|Import|Export|Find|Replace|Search Everywhere|Commit|Push|Pull|Merge|Rebase|Checkout|Branch|Clone Repository|Delete|Rename|Remove|Move|Copy|Add File to Git|Edit Commit Message|Confirm|Discard|Overwrite|File Already Exists|Resolve Conflicts)")
+    ~= nil
+end
+
+local function appendWorkspaceCandidate(result, seen, workspace)
+  if workspace and workspace ~= "" and not seen[workspace] then
+    result[#result + 1] = workspace
+    seen[workspace] = true
+  end
+end
 
 local function log(message)
   local attrs = hs.fs.attributes(logPath)
@@ -148,19 +172,23 @@ end
 
 local function recentWorkspaceCandidates(bundleID)
   local now = os.time()
+  local maxAge = inheritWindowSeconds
   local result = {}
   local seen = {}
 
+  if isJetBrainsBundle(bundleID) then
+    maxAge = jetbrainsInheritWindowSeconds
+  end
+
   for _, item in ipairs(focusHistoryByBundle[bundleID] or {}) do
-    if now - item.at <= inheritWindowSeconds and not seen[item.workspace] then
-      result[#result + 1] = item.workspace
-      seen[item.workspace] = true
+    if now - item.at <= maxAge then
+      appendWorkspaceCandidate(result, seen, item.workspace)
     end
   end
 
   local remembered = lastFocusedByBundle[bundleID]
-  if remembered and now - remembered.at <= inheritWindowSeconds and not seen[remembered.workspace] then
-    result[#result + 1] = remembered.workspace
+  if remembered and now - remembered.at <= maxAge then
+    appendWorkspaceCandidate(result, seen, remembered.workspace)
   end
 
   return result
@@ -211,7 +239,7 @@ local function findAeroWindowAsync(win, bundleID, title, callback)
 
     for _, item in ipairs(windows) do
       if item.id == directID then
-        callback(item)
+        callback(item, windows)
         return
       end
 
@@ -220,7 +248,7 @@ local function findAeroWindowAsync(win, bundleID, title, callback)
       end
     end
 
-    callback(fallback)
+    callback(fallback, windows)
   end)
 end
 
@@ -245,6 +273,53 @@ local function chooseTargetWorkspace(item, workspaceCandidates)
   end
 
   return targetWorkspace
+end
+
+local function chooseJetBrainsTargetWorkspace(item, workspaceCandidates)
+  if not item then
+    return workspaceCandidates[1]
+  end
+
+  for _, workspace in ipairs(workspaceCandidates) do
+    if item.workspace == workspace and workspace ~= jetbrainsDefaultWorkspace then
+      return workspace
+    end
+  end
+
+  for _, workspace in ipairs(workspaceCandidates) do
+    if workspace ~= jetbrainsDefaultWorkspace then
+      return workspace
+    end
+  end
+
+  return chooseTargetWorkspace(item, workspaceCandidates)
+end
+
+local function mergeJetBrainsOpenWindowCandidates(bundleID, item, workspaceCandidates, windows)
+  if not isJetBrainsBundle(bundleID) or not windows then
+    return workspaceCandidates
+  end
+
+  local result = {}
+  local seen = {}
+  for _, workspace in ipairs(workspaceCandidates) do
+    appendWorkspaceCandidate(result, seen, workspace)
+  end
+
+  local currentID = item and item.id
+  for _, other in ipairs(windows) do
+    if other.bundleID == bundleID and other.id ~= currentID and other.workspace ~= jetbrainsDefaultWorkspace then
+      appendWorkspaceCandidate(result, seen, other.workspace)
+    end
+  end
+
+  for _, other in ipairs(windows) do
+    if other.bundleID == bundleID and other.id ~= currentID then
+      appendWorkspaceCandidate(result, seen, other.workspace)
+    end
+  end
+
+  return result
 end
 
 local function refreshSketchyBar()
@@ -347,7 +422,11 @@ local function scheduleWorkspaceSettle(delay)
 end
 
 local function moveCreatedWindow(win, bundleID, title, workspaceCandidates, key)
-  if not win or not win:isStandard() or #workspaceCandidates == 0 then
+  if not win or not win:isStandard() then
+    return
+  end
+
+  if #workspaceCandidates == 0 and not isJetBrainsBundle(bundleID) then
     return
   end
 
@@ -356,17 +435,26 @@ local function moveCreatedWindow(win, bundleID, title, workspaceCandidates, key)
   end
 
   queryingWindows[key] = true
-  findAeroWindowAsync(win, bundleID, title, function(item)
+  findAeroWindowAsync(win, bundleID, title, function(item, windows)
     queryingWindows[key] = nil
     if movedWindows[key] or movingWindows[key] or not item then
       return
     end
 
+    local effectiveWorkspaceCandidates = mergeJetBrainsOpenWindowCandidates(bundleID, item, workspaceCandidates, windows)
+    if #effectiveWorkspaceCandidates == 0 then
+      return
+    end
+
     local targetWorkspace = pendingTargetsByWindow[key]
     if not targetWorkspace then
-      targetWorkspace = chooseTargetWorkspace(item, workspaceCandidates)
+      if isJetBrainsBundle(bundleID) then
+        targetWorkspace = chooseJetBrainsTargetWorkspace(item, effectiveWorkspaceCandidates)
+      else
+        targetWorkspace = chooseTargetWorkspace(item, effectiveWorkspaceCandidates)
+      end
       pendingTargetsByWindow[key] = targetWorkspace
-      log("target " .. bundleID .. " window=" .. item.id .. " target=" .. targetWorkspace .. " candidates=" .. table.concat(workspaceCandidates, ",") .. " current=" .. item.workspace .. " title=" .. title)
+      log("target " .. bundleID .. " window=" .. item.id .. " target=" .. targetWorkspace .. " candidates=" .. table.concat(effectiveWorkspaceCandidates, ",") .. " current=" .. item.workspace .. " title=" .. title)
     end
 
     if item.workspace == targetWorkspace then
@@ -402,15 +490,20 @@ local function inheritWorkspaceForCreatedWindow(win)
   end
 
   local workspaceCandidates = recentWorkspaceCandidates(bundleID)
-  if #workspaceCandidates == 0 then
+  if #workspaceCandidates == 0 and not isJetBrainsBundle(bundleID) then
     return
   end
 
   local title = win:title() or ""
   local key = windowKey(win, bundleID, title)
+  local retryDelays = defaultInheritRetryDelays
+
+  if isJetBrainsBundle(bundleID) then
+    retryDelays = jetbrainsInheritRetryDelays
+  end
 
   log("created " .. bundleID .. " candidates=" .. table.concat(workspaceCandidates, ",") .. " title=" .. title)
-  for _, delay in ipairs({ 0.15, 0.45, 0.9 }) do
+  for _, delay in ipairs(retryDelays) do
     hs.timer.doAfter(delay, function()
       moveCreatedWindow(win, bundleID, title, workspaceCandidates, key)
     end)
@@ -424,13 +517,68 @@ local function inheritWorkspaceForCreatedWindow(win)
   end)
 end
 
+local function repairJetBrainsSecondaryWindow(win)
+  local app = win and win:application()
+  local bundleID = app and app:bundleID()
+  local title = win and (win:title() or "") or ""
+
+  if isJetBrainsBundle(bundleID) and isLikelyJetBrainsSecondaryTitle(title) then
+    inheritWorkspaceForCreatedWindow(win)
+  end
+end
+
+local function repairExistingJetBrainsSecondaryWindows()
+  listAeroWindowsAsync(function(windows)
+    if not windows then
+      return
+    end
+
+    for _, item in ipairs(windows) do
+      if isJetBrainsBundle(item.bundleID) and isLikelyJetBrainsSecondaryTitle(item.title) then
+        local candidates = mergeJetBrainsOpenWindowCandidates(item.bundleID, item, recentWorkspaceCandidates(item.bundleID), windows)
+        local targetWorkspace = chooseJetBrainsTargetWorkspace(item, candidates)
+        if targetWorkspace and item.workspace ~= targetWorkspace then
+          log("repair existing " .. item.bundleID .. " window=" .. item.id .. " " .. item.workspace .. " -> " .. targetWorkspace .. " title=" .. item.title)
+          hs.task.new(aerospace, function(exitCode)
+            if exitCode == 0 then
+              hs.timer.doAfter(0.15, refreshSketchyBar)
+            else
+              log("repair existing failed " .. item.bundleID .. " window=" .. item.id .. " exit=" .. tostring(exitCode) .. " title=" .. item.title)
+            end
+          end, {
+            "move-node-to-workspace",
+            "--focus-follows-window",
+            "--window-id",
+            item.id,
+            targetWorkspace,
+          }):start()
+        end
+      end
+    end
+  end)
+end
+
+local function scheduleExistingJetBrainsRepair(delay)
+  if _G.wowJetBrainsRepairTimer then
+    _G.wowJetBrainsRepairTimer:stop()
+  end
+
+  _G.wowJetBrainsRepairTimer = hs.timer.doAfter(delay or 0.4, function()
+    _G.wowJetBrainsRepairTimer = nil
+    repairExistingJetBrainsSecondaryWindows()
+  end)
+end
+
 hs.window.filter.default:subscribe(hs.window.filter.windowFocused, function(win)
+  repairJetBrainsSecondaryWindow(win)
   scheduleRememberFocusedWindow(0.05)
   local app = win and win:application()
   scheduleClearAINotificationForBundle(app and app:bundleID())
 end)
 
 hs.window.filter.default:subscribe(hs.window.filter.windowCreated, inheritWorkspaceForCreatedWindow)
+
+hs.window.filter.default:subscribe(hs.window.filter.windowTitleChanged, repairJetBrainsSecondaryWindow)
 
 hs.window.filter.default:subscribe(hs.window.filter.windowDestroyed, function()
   scheduleWorkspaceSettle(0.08)
@@ -452,6 +600,7 @@ if hs.fs.attributes(airForceQuit, "mode") == "file" then
 end
 
 scheduleRememberFocusedWindow(0.05)
+scheduleExistingJetBrainsRepair(0.4)
 if _G.wowAINotificationRefreshTimer then
   _G.wowAINotificationRefreshTimer:stop()
 end
@@ -469,6 +618,9 @@ end
 _G.wowAIApplicationWatcher = hs.application.watcher.new(function(appName, eventType, app)
   if eventType == hs.application.watcher.activated then
     scheduleClearAINotificationForBundle(app and app:bundleID())
+    if isJetBrainsBundle(app and app:bundleID()) then
+      scheduleExistingJetBrainsRepair(0.2)
+    end
   end
 end)
 _G.wowAIApplicationWatcher:start()
